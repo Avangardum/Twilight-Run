@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 using Avangardum.TwilightRun.Models;
+using UnityEngine;
 using UVector3 = UnityEngine.Vector3;
 using SVector2 = System.Numerics.Vector2;
 

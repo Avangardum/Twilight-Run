@@ -10,10 +10,6 @@ namespace Avangardum.TwilightRun.Tests
 {
     public class GamePresenterTests : ZenjectUnitTestFixture
     {
-        private GameModelMock _gameModel;
-        private GameViewMock _gameView;
-        private GamePresenter _gamePresenter;
-
         private class GameModelMock : IGameModel
         {
             public event EventHandler StateUpdated;
@@ -31,6 +27,9 @@ namespace Avangardum.TwilightRun.Tests
             public UVector3 WhiteCharacterPosition { get; set; }
             public UVector3 BlackCharacterPosition { get; set; }
         }
+        
+        private GameModelMock _gameModel;
+        private GameViewMock _gameView;
 
         public override void Setup()
         {
@@ -39,16 +38,16 @@ namespace Avangardum.TwilightRun.Tests
             Container.BindInterfacesAndSelfTo<GameModelMock>().AsSingle();
             Container.BindInterfacesAndSelfTo<GameViewMock>().AsSingle();
             Container.Bind<GamePresenter>().AsSingle();
-            
+
+            Container.Resolve<GamePresenter>();
             Container.Inject(this);
         }
 
         [Inject]
-        private void Inject(GameModelMock gameModel, GameViewMock gameView, GamePresenter gamePresenter)
+        private void Inject(GameModelMock gameModel, GameViewMock gameView)
         {
             _gameModel = gameModel;
             _gameView = gameView;
-            _gamePresenter = gamePresenter;
         }
 
         private static readonly object[] UpdatesViewCharacterPositionsOnModelStateUpdatedCases =
