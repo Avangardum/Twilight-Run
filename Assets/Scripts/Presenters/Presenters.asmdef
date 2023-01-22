@@ -1,0 +1,17 @@
+{
+    "name": "Presenters",
+    "rootNamespace": "Avangardum.TwilightRun.Presenters",
+    "references": [
+        "GUID:3dab8656c9df8174e93de269ab42626f",
+        "GUID:7dc6b692741d8bf4b8d0d9eb426935a0"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

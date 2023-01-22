@@ -1,0 +1,16 @@
+{
+    "name": "Savers",
+    "rootNamespace": "Avangardum.TwilightRun.Savers",
+    "references": [
+        "GUID:3dab8656c9df8174e93de269ab42626f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

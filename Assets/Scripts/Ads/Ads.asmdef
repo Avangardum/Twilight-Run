@@ -1,0 +1,17 @@
+{
+    "name": "Ads",
+    "rootNamespace": "Avangardum.TwilightRun.Ads",
+    "references": [
+        "GUID:2502047444998f84191a09d1fe65e671",
+        "GUID:3dab8656c9df8174e93de269ab42626f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
