@@ -29,6 +29,7 @@ namespace Avangardum.TwilightRun.Tests
             UAssert.IsNotNull(_whiteCharacter);
             _blackCharacter = GameObject.Find("Black Character");
             UAssert.IsNotNull(_blackCharacter);
+            yield return null;
         }
         
         [UnityTest]
