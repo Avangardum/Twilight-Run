@@ -16,10 +16,14 @@ namespace Avangardum.TwilightRun.Tests
 
             public SVector2 WhiteCharacterPosition { get; set; }
             public SVector2 BlackCharacterPosition { get; set; }
+            public bool WasSwapCalled { get; set; }
             
             public void Update(float deltaTime) => StateUpdated?.Invoke(this, EventArgs.Empty);
-            
-            public void Swap() { }
+
+            public void Swap()
+            {
+                WasSwapCalled = true;
+            }
         }
         
         private class GameViewMock : IGameView
@@ -28,6 +32,8 @@ namespace Avangardum.TwilightRun.Tests
             
             public UVector3 WhiteCharacterPosition { get; set; }
             public UVector3 BlackCharacterPosition { get; set; }
+            
+            public void InvokeScreenTapped() => ScreenTapped?.Invoke(this, EventArgs.Empty);
         }
         
         private GameModelMock _gameModel;
@@ -67,6 +73,14 @@ namespace Avangardum.TwilightRun.Tests
             _gameModel.Update(0.01f);
             Assert.That(_gameView.WhiteCharacterPosition, Is.EqualTo(viewWhiteCharacterPosition));
             Assert.That(_gameView.BlackCharacterPosition, Is.EqualTo(viewBlackCharacterPosition));
+        }
+
+        [Test]
+        public void ScreenTapCausesSwap()
+        {
+            Assert.That(_gameModel.WasSwapCalled, Is.False);
+            _gameView.InvokeScreenTapped();
+            Assert.That(_gameModel.WasSwapCalled, Is.True);
         }
     }
 }

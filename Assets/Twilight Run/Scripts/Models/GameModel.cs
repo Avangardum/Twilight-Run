@@ -39,13 +39,13 @@ namespace Avangardum.TwilightRun.Models
                 var blackCharacterMovement = new Vector2(horizontalCharacterMovement, verticalBlackCharacterMovement);
                 _whiteCharacterPosition += whiteCharacterMovement;
                 _blackCharacterPosition += blackCharacterMovement;
-                if (whiteCharacterMovement.Y >= MaxCharacterYPos)
+                if (_whiteCharacterPosition.Y >= MaxCharacterYPos)
                 {
                     _whiteCharacterVerticalDirection = 0;
                     _whiteCharacterPosition.Y = MaxCharacterYPos;
                     _blackCharacterPosition.Y = MinCharacterYPos;
                 }
-                else if (whiteCharacterMovement.Y <= MinCharacterYPos)
+                else if (_whiteCharacterPosition.Y <= MinCharacterYPos)
                 {
                     _whiteCharacterVerticalDirection = 0;
                     _whiteCharacterPosition.Y = MinCharacterYPos;

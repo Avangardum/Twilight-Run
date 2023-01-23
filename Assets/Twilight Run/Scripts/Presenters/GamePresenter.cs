@@ -18,12 +18,19 @@ namespace Avangardum.TwilightRun.Presenters
             _gameView = gameView;
 
             gameModel.StateUpdated += OnGameStateUpdated;
+
+            gameView.ScreenTapped += OnScreenTapped;
         }
 
         private void OnGameStateUpdated(object sender, EventArgs e)
         {
             _gameView.WhiteCharacterPosition = ModelPositionToViewPosition(_gameModel.WhiteCharacterPosition);
             _gameView.BlackCharacterPosition = ModelPositionToViewPosition(_gameModel.BlackCharacterPosition);
+        }
+
+        private void OnScreenTapped(object sender, EventArgs e)
+        {
+            _gameModel.Swap();
         }
 
         [Pure]

@@ -37,6 +37,16 @@ namespace Avangardum.TwilightRun.Tests
         }
 
         [Test]
+        public void CharactersDontChangeYPositionIfSwapNotCalled()
+        {
+            var whiteCharacterYPosition = _gameModel.WhiteCharacterPosition.Y;
+            var blackCharacterYPosition = _gameModel.BlackCharacterPosition.Y;
+            _gameModel.Update(0.01f);
+            Assert.That(_gameModel.WhiteCharacterPosition.Y, Is.EqualTo(whiteCharacterYPosition));
+            Assert.That(_gameModel.BlackCharacterPosition.Y, Is.EqualTo(blackCharacterYPosition));
+        }
+
+        [Test]
         public void StateUpdatedInvokedAfterUpdateWithNonZeroDeltaTime()
         {
             _gameModel.StateUpdated += (s, e) => Assert.Pass();
