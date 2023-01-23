@@ -11,5 +11,6 @@ namespace Avangardum.TwilightRun.Models
         Vector2 BlackCharacterPosition { get; }
 
         void Update(float deltaTime);
+        void Swap();
     }
 }

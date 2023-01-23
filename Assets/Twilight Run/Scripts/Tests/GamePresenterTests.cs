@@ -18,6 +18,8 @@ namespace Avangardum.TwilightRun.Tests
             public SVector2 BlackCharacterPosition { get; set; }
             
             public void Update(float deltaTime) => StateUpdated?.Invoke(this, EventArgs.Empty);
+            
+            public void Swap() { }
         }
         
         private class GameViewMock : IGameView
@@ -31,10 +33,9 @@ namespace Avangardum.TwilightRun.Tests
         private GameModelMock _gameModel;
         private GameViewMock _gameView;
 
-        public override void Setup()
+        [SetUp]
+        public new void Setup()
         {
-            base.Setup();
-
             Container.BindInterfacesAndSelfTo<GameModelMock>().AsSingle();
             Container.BindInterfacesAndSelfTo<GameViewMock>().AsSingle();
             Container.Bind<GamePresenter>().AsSingle();

@@ -58,5 +58,40 @@ namespace Avangardum.TwilightRun.Tests
         {
             Assert.Throws<ArgumentOutOfRangeException>(() => _gameModel.Update(deltaTime));
         }
+
+        [Test]
+        public void SwapCharactersChangesCharactersPlaces()
+        {
+            var whiteCharacterYPosition = _gameModel.WhiteCharacterPosition.Y;
+            var blackCharacterYPosition = _gameModel.BlackCharacterPosition.Y;
+            _gameModel.Swap();
+            Wait(3);
+            Assert.That(_gameModel.WhiteCharacterPosition.Y, Is.EqualTo(blackCharacterYPosition));
+            Assert.That(_gameModel.BlackCharacterPosition.Y, Is.EqualTo(whiteCharacterYPosition));
+        }
+        
+        [Test]
+        public void SwapCharactersDoesntDoAnythingWhenCalledInSecondTimeShortlyAfterFirst()
+        {
+            var whiteCharacterYPosition = _gameModel.WhiteCharacterPosition.Y;
+            var blackCharacterYPosition = _gameModel.BlackCharacterPosition.Y;
+            _gameModel.Swap();
+            Wait(0.1f);
+            _gameModel.Swap();
+            Wait(2.9f);
+            Assert.That(_gameModel.WhiteCharacterPosition.Y, Is.EqualTo(blackCharacterYPosition));
+            Assert.That(_gameModel.BlackCharacterPosition.Y, Is.EqualTo(whiteCharacterYPosition));
+        }
+
+        private void Wait(float time, float timeStep = 0.02f)
+        {
+            var timeLeft = time;
+            while (timeLeft >= timeStep)
+            {
+                _gameModel.Update(timeStep);
+                timeLeft -= timeStep;
+            }
+            _gameModel.Update(timeLeft);
+        }
     }
 }
