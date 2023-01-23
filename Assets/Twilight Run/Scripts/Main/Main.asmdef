@@ -1,0 +1,23 @@
+{
+    "name": "Main",
+    "rootNamespace": "Avangardum.TwilightRun.Main",
+    "references": [
+        "GUID:6332f8c44878580488fa4721764b3422",
+        "GUID:1d188d5e6678e3e4ca4f2998bfe25c3d",
+        "GUID:7dc6b692741d8bf4b8d0d9eb426935a0",
+        "GUID:3dab8656c9df8174e93de269ab42626f",
+        "GUID:dfe6a4ea8bf91d3438e564a71c8a9998",
+        "GUID:2502047444998f84191a09d1fe65e671",
+        "GUID:3495e334725312542ac6b934db5707a8",
+        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -5,11 +5,13 @@ namespace Avangardum.TwilightRun.Models
 {
     public class GameModel : IGameModel
     {
-        public const float CharacterSpeed = 1;
+        private const float CharacterSpeed = 1;
+        private const float MaxCharacterYPos = 15;
+        private const float MinCharacterYPos = 1;
 
         public event EventHandler StateUpdated;
-        public Vector2 WhiteCharacterPosition { get; private set; }
-        public Vector2 BlackCharacterPosition { get; private set; }
+        public Vector2 WhiteCharacterPosition { get; private set; } = new(0, MaxCharacterYPos);
+        public Vector2 BlackCharacterPosition { get; private set; } = new(0, MinCharacterYPos);
 
         public void Update(float deltaTime)
         {
