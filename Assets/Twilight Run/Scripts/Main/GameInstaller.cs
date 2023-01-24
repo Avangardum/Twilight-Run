@@ -9,12 +9,14 @@ namespace Avangardum.TwilightRun.Main
     public class GameInstaller : MonoInstaller
     {
         [SerializeField] private GameView _gameView;
+        [SerializeField] private GameConfig _gameConfig;
         
         public override void InstallBindings()
         {
             Container.Bind<IGameModel>().To<GameModel>().AsSingle();
             Container.Bind<IGameView>().FromInstance(_gameView).AsSingle();
             Container.Bind<GamePresenter>().AsSingle().NonLazy();
+            Container.Bind<IGameConfig>().FromInstance(_gameConfig).AsSingle();
         }
     }
 }

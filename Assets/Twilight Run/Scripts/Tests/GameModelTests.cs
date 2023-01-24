@@ -7,6 +7,14 @@ namespace Avangardum.TwilightRun.Tests
 {
     public class GameModelTests : ZenjectUnitTestFixture
     {
+        public class TestGameConfig : IGameConfig
+        {
+            public float CharacterHorizontalSpeed => 5;
+            public float CharacterVerticalSpeed => 10;
+            public float MinCharacterYPosition => 1;
+            public float MaxCharacterYPosition => 15;
+        }
+        
         private IGameModel _gameModel;
         
         [Inject]
@@ -15,11 +23,11 @@ namespace Avangardum.TwilightRun.Tests
             _gameModel = gameModel;
         }
         
-        public override void Setup()
+        [SetUp]
+        public void CSetUp()
         {
-            base.Setup();
-
             Container.Bind<IGameModel>().To<GameModel>().AsSingle();
+            Container.Bind<IGameConfig>().To<TestGameConfig>().AsSingle();
             
             Container.Inject(this);
         }

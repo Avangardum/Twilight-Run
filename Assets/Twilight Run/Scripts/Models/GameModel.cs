@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Numerics;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Avangardum.TwilightRun.Models
 {
     public class GameModel : IGameModel
     {
-        private const float CharacterSpeed = 5;
-        private const float CharacterVerticalSpeed = 10;
-        private const float MaxCharacterYPos = 15;
-        private const float MinCharacterYPos = 1;
-
         private int _whiteCharacterVerticalDirection;
-        private Vector2 _whiteCharacterPosition = new(0, MaxCharacterYPos);
-        private Vector2 _blackCharacterPosition = new(0, MinCharacterYPos);
+        private Vector2 _whiteCharacterPosition;
+        private Vector2 _blackCharacterPosition;
+        private IGameConfig _gameConfig;
+
+        public GameModel(IGameConfig gameConfig)
+        {
+            _gameConfig = gameConfig;
+            _whiteCharacterPosition = new(0, _gameConfig.MaxCharacterYPosition);
+            _blackCharacterPosition = new(0, _gameConfig.MinCharacterYPosition);
+        }
 
         public event EventHandler StateUpdated;
 
@@ -32,24 +37,24 @@ namespace Avangardum.TwilightRun.Models
 
             void ProcessMovement()
             {
-                var horizontalCharacterMovement = CharacterSpeed * deltaTime;
-                var verticalWhiteCharacterMovement = _whiteCharacterVerticalDirection * (CharacterVerticalSpeed * deltaTime);
+                var horizontalCharacterMovement = _gameConfig.CharacterHorizontalSpeed * deltaTime;
+                var verticalWhiteCharacterMovement = _whiteCharacterVerticalDirection * (_gameConfig.CharacterVerticalSpeed * deltaTime);
                 var verticalBlackCharacterMovement = -verticalWhiteCharacterMovement;
                 var whiteCharacterMovement = new Vector2(horizontalCharacterMovement, verticalWhiteCharacterMovement);
                 var blackCharacterMovement = new Vector2(horizontalCharacterMovement, verticalBlackCharacterMovement);
                 _whiteCharacterPosition += whiteCharacterMovement;
                 _blackCharacterPosition += blackCharacterMovement;
-                if (_whiteCharacterPosition.Y >= MaxCharacterYPos)
+                if (_whiteCharacterPosition.Y >= _gameConfig.MaxCharacterYPosition)
                 {
                     _whiteCharacterVerticalDirection = 0;
-                    _whiteCharacterPosition.Y = MaxCharacterYPos;
-                    _blackCharacterPosition.Y = MinCharacterYPos;
+                    _whiteCharacterPosition.Y = _gameConfig.MaxCharacterYPosition;
+                    _blackCharacterPosition.Y = _gameConfig.MinCharacterYPosition;
                 }
-                else if (_whiteCharacterPosition.Y <= MinCharacterYPos)
+                else if (_whiteCharacterPosition.Y <= _gameConfig.MinCharacterYPosition)
                 {
                     _whiteCharacterVerticalDirection = 0;
-                    _whiteCharacterPosition.Y = MinCharacterYPos;
-                    _blackCharacterPosition.Y = MaxCharacterYPos;
+                    _whiteCharacterPosition.Y = _gameConfig.MinCharacterYPosition;
+                    _blackCharacterPosition.Y = _gameConfig.MaxCharacterYPosition;
                 }
             }
         }
@@ -57,12 +62,9 @@ namespace Avangardum.TwilightRun.Models
         public void Swap()
         {
             if (_whiteCharacterVerticalDirection != 0) return;
-            _whiteCharacterVerticalDirection = _whiteCharacterPosition.Y switch
-            {
-                MinCharacterYPos => 1,
-                MaxCharacterYPos => -1,
-                _ => throw new ArgumentOutOfRangeException()
-            };
+            Debug.Assert(new[] { _gameConfig.MinCharacterYPosition, _gameConfig.MaxCharacterYPosition }.
+                Contains(_whiteCharacterPosition.Y));
+            _whiteCharacterVerticalDirection = _whiteCharacterPosition.Y == _gameConfig.MinCharacterYPosition ? 1 : -1;
         }
     }
 }

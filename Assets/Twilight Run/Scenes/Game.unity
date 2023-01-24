@@ -316,6 +316,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gameView: {fileID: 503076072}
+  _gameConfig: {fileID: 11400000, guid: 67c3d26188e2fe64aad198a48d8139d0, type: 2}
 --- !u!114 &398621406
 MonoBehaviour:
   m_ObjectHideFlags: 0
