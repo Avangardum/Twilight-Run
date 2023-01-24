@@ -9,7 +9,8 @@
         "Savers",
         "Models",
         "Presenters",
-        "Common"
+        "Common",
+        "Main"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

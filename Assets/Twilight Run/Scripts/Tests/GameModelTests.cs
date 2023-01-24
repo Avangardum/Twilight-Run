@@ -1,24 +1,15 @@
 ﻿using System;
 using System.Linq;
+using Avangardum.TwilightRun.Main;
 using NUnit.Framework;
 using Zenject;
 using Avangardum.TwilightRun.Models;
+using UnityEditor;
 
 namespace Avangardum.TwilightRun.Tests
 {
     public class GameModelTests : ZenjectUnitTestFixture
     {
-        public class TestGameConfig : IGameConfig
-        {
-            public float CharacterHorizontalSpeed => 5;
-            public float CharacterVerticalSpeed => 10;
-            public float MinCharacterYPosition => 1;
-            public float MaxCharacterYPosition => 15;
-            public float StartSafeZoneSize => 25;
-            public float WorldGenerationZoneForwardSize => 100;
-            public float WorldGenerationZoneBackSize => 20;
-        }
-        
         private IGameModel _gameModel;
         private IGameConfig _gameConfig;
         
@@ -33,7 +24,9 @@ namespace Avangardum.TwilightRun.Tests
         public void CSetUp()
         {
             Container.Bind<IGameModel>().To<GameModel>().AsSingle();
-            Container.Bind<IGameConfig>().To<TestGameConfig>().AsSingle();
+            const string gameConfigPath = "Assets/Twilight Run/Game Config.asset";
+            var gameConfig = AssetDatabase.LoadAssetAtPath<GameConfig>(gameConfigPath);
+            Container.Bind<IGameConfig>().FromInstance(gameConfig).AsSingle();
             
             Container.Inject(this);
         }
