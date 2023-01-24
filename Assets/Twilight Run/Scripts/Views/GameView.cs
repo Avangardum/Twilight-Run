@@ -1,5 +1,6 @@
 ﻿using System;
 using Avangardum.TwilightRun.Presenters;
+using Avangardum.TwilightRun.Models;
 using UnityEngine;
 
 namespace Avangardum.TwilightRun.Views
@@ -19,6 +20,11 @@ namespace Avangardum.TwilightRun.Views
         public Vector3 BlackCharacterPosition
         {
             set => _blackCharacter.transform.position = value;
+        }
+
+        public void CreateObstacle(Obstacle obstacle)
+        {
+            
         }
 
         private void Update()

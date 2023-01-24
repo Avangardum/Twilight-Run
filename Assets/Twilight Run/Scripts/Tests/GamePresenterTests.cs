@@ -27,6 +27,9 @@ namespace Avangardum.TwilightRun.Tests
             {
                 WasSwapCalled = true;
             }
+
+            public void InvokeObstacleSpawned(Obstacle obstacle) => 
+                ObstacleSpawned?.Invoke(this, new ObstacleSpawnedEventArgs(obstacle));
         }
         
         private class GameViewMock : IGameView
@@ -35,7 +38,13 @@ namespace Avangardum.TwilightRun.Tests
             
             public UVector3 WhiteCharacterPosition { get; set; }
             public UVector3 BlackCharacterPosition { get; set; }
+            public Obstacle LastCreatedObstacle { get; set; }
             
+            public void CreateObstacle(Obstacle obstacle)
+            {
+                LastCreatedObstacle = obstacle;
+            }
+
             public void InvokeScreenTapped() => ScreenTapped?.Invoke(this, EventArgs.Empty);
         }
         
@@ -81,9 +90,18 @@ namespace Avangardum.TwilightRun.Tests
         [Test]
         public void ScreenTapCausesSwap()
         {
-            Assert.That(_gameModel.WasSwapCalled, Is.False);
+            Assume.That(_gameModel.WasSwapCalled, Is.False);
             _gameView.InvokeScreenTapped();
             Assert.That(_gameModel.WasSwapCalled, Is.True);
+        }
+
+        [Test] 
+        public void ViewCreatesObstacleOnObstacleSpawned()
+        {
+            Assume.That(_gameView.LastCreatedObstacle, Is.Null);
+            var obstacle = new Obstacle(SVector2.One, SVector2.One, GameColor.Red);
+            _gameModel.InvokeObstacleSpawned(obstacle);
+            Assert.That(_gameView.LastCreatedObstacle, Is.EqualTo(obstacle));
         }
     }
 }

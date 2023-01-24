@@ -3,6 +3,7 @@
     "rootNamespace": "Avangardum.TwilightRun.Views",
     "references": [
         "GUID:dfe6a4ea8bf91d3438e564a71c8a9998",
+        "GUID:3dab8656c9df8174e93de269ab42626f",
         "GUID:ea4607bfe60d81d4fa7dc8893e1ca39b"
     ],
     "includePlatforms": [],

@@ -18,6 +18,7 @@ namespace Avangardum.TwilightRun.Presenters
             _gameView = gameView;
 
             gameModel.StateUpdated += OnGameStateUpdated;
+            gameModel.ObstacleSpawned += OnObstacleSpawned;
 
             gameView.ScreenTapped += OnScreenTapped;
         }
@@ -31,6 +32,11 @@ namespace Avangardum.TwilightRun.Presenters
         private void OnScreenTapped(object sender, EventArgs e)
         {
             _gameModel.Swap();
+        }
+
+        private void OnObstacleSpawned(object sender, ObstacleSpawnedEventArgs e)
+        {
+            _gameView.CreateObstacle(e.Obstacle);
         }
 
         [Pure]
