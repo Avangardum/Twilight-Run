@@ -37,6 +37,14 @@ namespace Avangardum.TwilightRun.Models
             if (deltaTime == 0) return;
             if (deltaTime is < 0 or float.PositiveInfinity or float.NaN)
                 throw new ArgumentOutOfRangeException(nameof(deltaTime), deltaTime, $"Invalid {nameof(deltaTime)} value.");
+            
+            // If deltaTime is more than maxDeltaTime, unfold this update into several smaller updates.
+            const float maxDeltaTime = 0.1f;
+            while (deltaTime > maxDeltaTime)
+            {
+                Update(maxDeltaTime);
+                deltaTime -= maxDeltaTime;
+            }
 
             GenerateWorld();
             ProcessMovement();

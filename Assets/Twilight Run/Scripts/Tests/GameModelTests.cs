@@ -111,6 +111,17 @@ namespace Avangardum.TwilightRun.Tests
             var firstObstacle = _gameModel.Obstacles.OrderBy(o => o.Position.X).First();
             Assert.That(firstObstacle.Position.X, Is.GreaterThanOrEqualTo(_gameConfig.StartSafeZoneSize));
         }
+
+        [TestCase(0.05f, 1)]
+        [TestCase(0.11f, 2)]
+        [TestCase(0.43f, 5)]
+        public void UpdateWithTooBigDeltaTimeUnfoldsIntoMultipleUpdates(float deltaTime, int expectedUpdateCount)
+        {
+            int updateCount = 0;
+            _gameModel.StateUpdated += (_, _) => updateCount++;
+            _gameModel.Update(deltaTime);
+            Assert.That(updateCount, Is.EqualTo(expectedUpdateCount));
+        }
         
         private void Wait(float time, float timeStep = 0.02f)
         {
