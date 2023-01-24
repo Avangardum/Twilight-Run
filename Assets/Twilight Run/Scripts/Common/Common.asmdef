@@ -1,10 +1,7 @@
 {
-    "name": "Analytics",
-    "rootNamespace": "Avangardum.TwilightRun.Analytics",
-    "references": [
-        "GUID:3dab8656c9df8174e93de269ab42626f",
-        "GUID:ea4607bfe60d81d4fa7dc8893e1ca39b"
-    ],
+    "name": "Common",
+    "rootNamespace": "Avangardum.TwilightRun.Common",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

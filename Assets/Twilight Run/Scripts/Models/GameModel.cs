@@ -25,6 +25,7 @@ namespace Avangardum.TwilightRun.Models
         }
 
         public event EventHandler StateUpdated;
+        public event EventHandler<ObstacleSpawnedEventArgs> ObstacleSpawned;
 
         public Vector2 WhiteCharacterPosition => _whiteCharacterPosition;
 
@@ -69,8 +70,8 @@ namespace Avangardum.TwilightRun.Models
             {
                 while (_whiteCharacterPosition.X + _gameConfig.WorldGenerationZoneForwardSize > _worldForwardEdgeXPosition)
                 {
-                    _obstacles.Add(new Obstacle(new Vector2(_worldForwardEdgeXPosition, _gameConfig.MinCharacterYPosition), 
-                        Vector2.One, GameColor.Red));
+                    SpawnObstacle(new Vector2(_worldForwardEdgeXPosition, _gameConfig.MinCharacterYPosition), 
+                        Vector2.One, GameColor.Red);
                     _worldForwardEdgeXPosition += 10;
                 }
             }
@@ -82,6 +83,13 @@ namespace Avangardum.TwilightRun.Models
             Debug.Assert(new[] { _gameConfig.MinCharacterYPosition, _gameConfig.MaxCharacterYPosition }.
                 Contains(_whiteCharacterPosition.Y));
             _whiteCharacterVerticalDirection = _whiteCharacterPosition.Y == _gameConfig.MinCharacterYPosition ? 1 : -1;
+        }
+
+        private void SpawnObstacle(Vector2 position, Vector2 size, GameColor color)
+        {
+            var obstacle = new Obstacle(position, size, color);
+            _obstacles.Add(obstacle);
+            ObstacleSpawned?.Invoke(this, new ObstacleSpawnedEventArgs(obstacle));
         }
     }
 }

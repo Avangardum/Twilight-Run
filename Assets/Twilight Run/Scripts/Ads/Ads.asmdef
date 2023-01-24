@@ -3,7 +3,8 @@
     "rootNamespace": "Avangardum.TwilightRun.Ads",
     "references": [
         "GUID:2502047444998f84191a09d1fe65e671",
-        "GUID:3dab8656c9df8174e93de269ab42626f"
+        "GUID:3dab8656c9df8174e93de269ab42626f",
+        "GUID:ea4607bfe60d81d4fa7dc8893e1ca39b"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

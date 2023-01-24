@@ -14,6 +14,7 @@ namespace Avangardum.TwilightRun.Tests
         private class GameModelMock : IGameModel
         {
             public event EventHandler StateUpdated;
+            public event EventHandler<ObstacleSpawnedEventArgs> ObstacleSpawned;
 
             public SVector2 WhiteCharacterPosition { get; set; }
             public SVector2 BlackCharacterPosition { get; set; }

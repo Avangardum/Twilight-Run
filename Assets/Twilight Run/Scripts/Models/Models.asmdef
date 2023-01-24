@@ -1,7 +1,9 @@
 {
     "name": "Models",
     "rootNamespace": "Avangardum.TwilightRun.Models",
-    "references": [],
+    "references": [
+        "GUID:ea4607bfe60d81d4fa7dc8893e1ca39b"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

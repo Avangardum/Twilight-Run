@@ -107,8 +107,11 @@ namespace Avangardum.TwilightRun.Tests
         [Test]
         public void ObstaclesSpawn()
         {
+            bool wasObstacleSpawned = false;
+            _gameModel.ObstacleSpawned += (_, _) => wasObstacleSpawned = true;
             Wait(0.01f);
             Assert.That(_gameModel.Obstacles, Is.Not.Empty);
+            Assert.That(wasObstacleSpawned, Is.True);
         }
         
         private void Wait(float time, float timeStep = 0.02f)

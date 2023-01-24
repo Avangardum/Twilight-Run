@@ -8,7 +8,8 @@
         "Zenject-TestFramework",
         "Savers",
         "Models",
-        "Presenters"
+        "Presenters",
+        "Common"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
