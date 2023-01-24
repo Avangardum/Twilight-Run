@@ -25,8 +25,8 @@ namespace Avangardum.TwilightRun.Presenters
 
         private void OnGameStateUpdated(object sender, EventArgs e)
         {
-            _gameView.WhiteCharacterPosition = ModelPositionToViewPosition(_gameModel.WhiteCharacterPosition);
-            _gameView.BlackCharacterPosition = ModelPositionToViewPosition(_gameModel.BlackCharacterPosition);
+            _gameView.WhiteCharacterPosition = ModelVectorToViewVector(_gameModel.WhiteCharacterPosition);
+            _gameView.BlackCharacterPosition = ModelVectorToViewVector(_gameModel.BlackCharacterPosition);
         }
 
         private void OnScreenTapped(object sender, EventArgs e)
@@ -36,11 +36,21 @@ namespace Avangardum.TwilightRun.Presenters
 
         private void OnObstacleSpawned(object sender, ObstacleSpawnedEventArgs e)
         {
-            _gameView.CreateObstacle(e.Obstacle);
+            _gameView.CreateObstacleView(e.Obstacle.Id, ModelVectorToViewVector(e.Obstacle.Position), 
+                ModelVectorToViewVector(e.Obstacle.Size, 1), GameColorToUnityColor(e.Obstacle.Color));
         }
 
         [Pure]
-        private UVector3 ModelPositionToViewPosition(SVector2 modelPosition) =>
-            new(0, modelPosition.Y, modelPosition.X);
+        private UVector3 ModelVectorToViewVector(SVector2 modelPosition, float x = 0) =>
+            new(x, modelPosition.Y, modelPosition.X);
+
+        [Pure]
+        private Color GameColorToUnityColor(GameColor gameColor) => gameColor switch
+        {
+            GameColor.White => Color.white,
+            GameColor.Black => Color.black,
+            GameColor.Red => Color.red,
+            _ => throw new ArgumentOutOfRangeException(nameof(gameColor), gameColor, null)
+        };
     }
 }

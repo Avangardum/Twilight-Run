@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using Avangardum.TwilightRun.Presenters;
-using Avangardum.TwilightRun.Models;
 using UnityEngine;
 
 namespace Avangardum.TwilightRun.Views
@@ -9,7 +9,10 @@ namespace Avangardum.TwilightRun.Views
     {
         [SerializeField] private GameObject _whiteCharacter;
         [SerializeField] private GameObject _blackCharacter;
-        
+        [SerializeField] private GameObject _obstaclePrefab;
+
+        private Dictionary<int, GameObject> _obstacleViewsById = new();
+
         public event EventHandler ScreenTapped;
 
         public Vector3 WhiteCharacterPosition
@@ -22,7 +25,7 @@ namespace Avangardum.TwilightRun.Views
             set => _blackCharacter.transform.position = value;
         }
 
-        public void CreateObstacle(Obstacle obstacle)
+        public void CreateObstacleView(int id, Vector3 position, Vector3 size, Color color)
         {
             
         }
