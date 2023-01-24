@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace Avangardum.TwilightRun.Models
@@ -9,6 +10,7 @@ namespace Avangardum.TwilightRun.Models
         
         Vector2 WhiteCharacterPosition { get; }
         Vector2 BlackCharacterPosition { get; }
+        IReadOnlyList<Obstacle> Obstacles { get; }
 
         void Update(float deltaTime);
         void Swap();

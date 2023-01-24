@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Zenject;
 using Avangardum.TwilightRun.Models;
 using Avangardum.TwilightRun.Presenters;
@@ -16,6 +17,7 @@ namespace Avangardum.TwilightRun.Tests
 
             public SVector2 WhiteCharacterPosition { get; set; }
             public SVector2 BlackCharacterPosition { get; set; }
+            public IReadOnlyList<Obstacle> Obstacles { get; } = new List<Obstacle>();
             public bool WasSwapCalled { get; set; }
             
             public void Update(float deltaTime) => StateUpdated?.Invoke(this, EventArgs.Empty);

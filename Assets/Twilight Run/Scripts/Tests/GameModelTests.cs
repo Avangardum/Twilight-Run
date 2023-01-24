@@ -13,6 +13,9 @@ namespace Avangardum.TwilightRun.Tests
             public float CharacterVerticalSpeed => 10;
             public float MinCharacterYPosition => 1;
             public float MaxCharacterYPosition => 15;
+            public float StartSafeZoneSize => 25;
+            public float WorldGenerationZoneForwardSize => 100;
+            public float WorldGenerationZoneBackSize => 20;
         }
         
         private IGameModel _gameModel;
@@ -101,6 +104,13 @@ namespace Avangardum.TwilightRun.Tests
             Assert.That(_gameModel.BlackCharacterPosition.Y, Is.EqualTo(whiteCharacterYPosition));
         }
 
+        [Test]
+        public void ObstaclesSpawn()
+        {
+            Wait(0.01f);
+            Assert.That(_gameModel.Obstacles, Is.Not.Empty);
+        }
+        
         private void Wait(float time, float timeStep = 0.02f)
         {
             var timeLeft = time;
