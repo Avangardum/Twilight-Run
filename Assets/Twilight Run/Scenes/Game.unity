@@ -245,7 +245,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   m_LocalRotation: {x: -0.26430702, y: 0.21806377, z: -0.061481573, w: -0.9374487}
-  m_LocalPosition: {x: 24.28, y: 29.54, z: -49.39}
+  m_LocalPosition: {x: 24.28, y: 29.54, z: -25.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -510,6 +510,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _whiteCharacter: {fileID: 9075320392117433327}
   _blackCharacter: {fileID: 1015587858}
+  _obstaclePrefab: {fileID: 5068600664353986956, guid: 46402e0865a7fbb4fa1d789fc78ea15a,
+    type: 3}
 --- !u!4 &503076073
 Transform:
   m_ObjectHideFlags: 0

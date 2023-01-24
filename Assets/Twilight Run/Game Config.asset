@@ -16,3 +16,6 @@ MonoBehaviour:
   <CharacterVerticalSpeed>k__BackingField: 10
   <MinCharacterYPosition>k__BackingField: 1
   <MaxCharacterYPosition>k__BackingField: 15
+  <StartSafeZoneSize>k__BackingField: 25
+  <WorldGenerationZoneForwardSize>k__BackingField: 100
+  <WorldGenerationZoneBackSize>k__BackingField: 20

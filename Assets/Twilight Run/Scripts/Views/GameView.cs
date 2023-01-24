@@ -27,7 +27,13 @@ namespace Avangardum.TwilightRun.Views
 
         public void CreateObstacleView(int id, Vector3 position, Vector3 size, Color color)
         {
-            
+            var obstacleView = Instantiate(_obstaclePrefab);
+            const string obstacleNameFormat = "Obstacle {0}";
+            obstacleView.name = string.Format(obstacleNameFormat, id);
+            obstacleView.transform.position = position;
+            obstacleView.transform.localScale = size;
+            obstacleView.GetComponent<Renderer>().material.color = color;
+            _obstacleViewsById.Add(id, obstacleView);
         }
 
         private void Update()

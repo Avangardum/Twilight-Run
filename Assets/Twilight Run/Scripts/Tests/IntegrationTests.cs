@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using Avangardum.TwilightRun.Models;
 using NUnit.Framework;
 using UnityEngine;
@@ -8,7 +9,6 @@ using UAssert = UnityEngine.Assertions.Assert;
 
 namespace Avangardum.TwilightRun.Tests
 {
-    [Explicit]
     public class IntegrationTests : SceneTestFixture
     {
         private GameObject _whiteCharacter;
@@ -55,6 +55,14 @@ namespace Avangardum.TwilightRun.Tests
             Time.timeScale = 1;
             Assert.That(_whiteCharacter.transform.position.y, Is.EqualTo(blackCharacterYPosition));
             Assert.That(_blackCharacter.transform.position.y, Is.EqualTo(whiteCharacterYPosition));
+        }
+
+        [Test]
+        public void ObstaclesCreatedOnStartup()
+        {
+            var obstacles = Object.FindObjectsOfType<GameObject>()
+                .Where(go => go.name.StartsWith("Obstacle"));
+            Assert.That(obstacles, Is.Not.Empty);
         }
     }
 }

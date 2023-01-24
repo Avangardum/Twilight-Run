@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NUnit.Framework;
 using Zenject;
 using Avangardum.TwilightRun.Models;
@@ -19,11 +20,13 @@ namespace Avangardum.TwilightRun.Tests
         }
         
         private IGameModel _gameModel;
+        private IGameConfig _gameConfig;
         
         [Inject]
-        public void Inject(IGameModel gameModel)
+        public void Inject(IGameModel gameModel, IGameConfig gameConfig)
         {
             _gameModel = gameModel;
+            _gameConfig = gameConfig;
         }
         
         [SetUp]
@@ -105,13 +108,15 @@ namespace Avangardum.TwilightRun.Tests
         }
 
         [Test]
-        public void ObstaclesSpawn()
+        public void ObstaclesSpawnButNotInSafeZone()
         {
             bool wasObstacleSpawned = false;
             _gameModel.ObstacleSpawned += (_, _) => wasObstacleSpawned = true;
             Wait(0.01f);
             Assert.That(_gameModel.Obstacles, Is.Not.Empty);
             Assert.That(wasObstacleSpawned, Is.True);
+            var firstObstacle = _gameModel.Obstacles.OrderBy(o => o.Position.X).First();
+            Assert.That(firstObstacle.Position.X, Is.GreaterThanOrEqualTo(_gameConfig.StartSafeZoneSize));
         }
         
         private void Wait(float time, float timeStep = 0.02f)
