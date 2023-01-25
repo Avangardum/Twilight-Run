@@ -16,13 +16,15 @@ namespace Avangardum.TwilightRun.Tests
         {
             public event EventHandler StateUpdated;
             public event EventHandler<ObstacleSpawnedEventArgs> ObstacleSpawned;
+            public event EventHandler<ObstacleRemovedEventArgs> ObstacleRemoved;
 
             public SVector2 WhiteCharacterPosition { get; set; }
             public SVector2 BlackCharacterPosition { get; set; }
             public IReadOnlyList<Obstacle> Obstacles { get; } = new List<Obstacle>();
             public bool WasSwapCalled { get; set; }
-            
+
             public void Update(float deltaTime) => StateUpdated?.Invoke(this, EventArgs.Empty);
+
 
             public void Swap()
             {
@@ -31,6 +33,9 @@ namespace Avangardum.TwilightRun.Tests
 
             public void InvokeObstacleSpawned(Obstacle obstacle) => 
                 ObstacleSpawned?.Invoke(this, new ObstacleSpawnedEventArgs(obstacle));
+
+            public void InvokeObstacleRemoved(int id) =>
+                ObstacleRemoved?.Invoke(this, new ObstacleRemovedEventArgs(id));
         }
         
         private class GameViewMock : IGameView
@@ -42,12 +47,18 @@ namespace Avangardum.TwilightRun.Tests
             public UVector3? LastCreatedObstaclePosition { get; private set; }
             public UVector3? LastCreatedObstacleSize { get; private set; }
             public Color? LastCreatedObstacleColor { get; private set; }
+            public int? LastRemovedObstacleId { get; private set; }
             
             public void CreateObstacleView(int id, UVector3 position, UVector3 size, Color color)
             {
                 LastCreatedObstaclePosition = position;
                 LastCreatedObstacleSize = size;
                 LastCreatedObstacleColor = color;
+            }
+
+            public void RemoveObstacleView(int id)
+            {
+                LastRemovedObstacleId = id;
             }
 
             public void InvokeScreenTapped() => ScreenTapped?.Invoke(this, EventArgs.Empty);
@@ -108,6 +119,13 @@ namespace Avangardum.TwilightRun.Tests
             Assert.That(_gameView.LastCreatedObstaclePosition, Is.EqualTo(new UVector3(0, 1, 1)));
             Assert.That(_gameView.LastCreatedObstacleSize, Is.EqualTo(new UVector3(1, 2, 2)));
             Assert.That(_gameView.LastCreatedObstacleColor, Is.EqualTo(Color.red));
+        }
+        
+        [Test]
+        public void ObstacleViewRemovedOnObstacleRemoved()
+        {
+            _gameModel.InvokeObstacleRemoved(42);
+            Assert.That(_gameView.LastRemovedObstacleId, Is.EqualTo(42));
         }
     }
 }

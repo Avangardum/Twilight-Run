@@ -36,6 +36,13 @@ namespace Avangardum.TwilightRun.Views
             _obstacleViewsById.Add(id, obstacleView);
         }
 
+        public void RemoveObstacleView(int id)
+        {
+            var obstacleView = _obstacleViewsById[id];
+            _obstacleViewsById.Remove(id);
+            Destroy(obstacleView);
+        }
+
         private void Update()
         {
             if (Input.anyKeyDown)

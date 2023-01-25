@@ -28,6 +28,7 @@ namespace Avangardum.TwilightRun.Models
 
         public event EventHandler StateUpdated;
         public event EventHandler<ObstacleSpawnedEventArgs> ObstacleSpawned;
+        public event EventHandler<ObstacleRemovedEventArgs> ObstacleRemoved;
 
         public Vector2 WhiteCharacterPosition => _whiteCharacterPosition;
 
@@ -50,6 +51,7 @@ namespace Avangardum.TwilightRun.Models
 
             GenerateWorld();
             ProcessMovement();
+            CleanupWorld();
 
             StateUpdated?.Invoke(this, EventArgs.Empty);
 
@@ -85,6 +87,20 @@ namespace Avangardum.TwilightRun.Models
                     SpawnObstacleGroup(obstacleGroup);
                 }
             }
+            
+            void CleanupWorld()
+            {
+                var worldGenerationZoneBackEdgeX = _whiteCharacterPosition.X - _gameConfig.WorldGenerationZoneBackSize;
+                while (IsCleanupNeeded())
+                {
+                    RemoveObstacle(_obstacles[0]);
+                }
+
+                bool IsCleanupNeeded()
+                {
+                    return _obstacles[0].Position.X < worldGenerationZoneBackEdgeX;
+                }
+            }
         }
 
         public void Swap()
@@ -109,6 +125,12 @@ namespace Avangardum.TwilightRun.Models
             var obstacle = new Obstacle(position, size, color);
             _obstacles.Add(obstacle);
             ObstacleSpawned?.Invoke(this, new ObstacleSpawnedEventArgs(obstacle));
+        }
+
+        private void RemoveObstacle(Obstacle obstacle)
+        {
+            _obstacles.Remove(obstacle);
+            ObstacleRemoved?.Invoke(this, new ObstacleRemovedEventArgs(obstacle.Id));
         }
     }
 }

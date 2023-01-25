@@ -146,6 +146,22 @@ namespace Avangardum.TwilightRun.Tests
             Assert.That(obstacles[1].Position, Is.EqualTo(new Vector2(safeZoneSize + 5, 0)));
             Assert.That(obstacles[2].Position, Is.EqualTo(new Vector2(safeZoneSize + 10, 0)));
         }
+
+        [Test]
+        public void ObstaclesBehindWorldGenerationZoneRemoved()
+        {
+            SetHarmlessObstacleGroupConfig();
+            bool wasObstacleRemoved = false;
+            _gameModel.ObstacleRemoved += (_, _) => wasObstacleRemoved = true;
+            for (int i = 0; i < 10; i++)
+            {
+                Wait(5);
+                var obstacleXPositions = _gameModel.Obstacles.Select(o => o.Position.X);
+                var minObstacleXPosition = _gameModel.WhiteCharacterPosition.X - _testGameConfig.WorldGenerationZoneBackSize;
+                Assert.That(obstacleXPositions, Has.All.GreaterThanOrEqualTo(minObstacleXPosition));
+            }
+            Assert.That(wasObstacleRemoved, Is.True);
+        }
         
         private void Wait(float time, float timeStep = 0.02f)
         {
@@ -156,6 +172,16 @@ namespace Avangardum.TwilightRun.Tests
                 timeLeft -= timeStep;
             }
             _gameModel.Update(timeLeft);
+        }
+
+        private void SetHarmlessObstacleGroupConfig()
+        {
+            _testGameConfig.ObstacleGroups.Clear();
+            _testGameConfig.ObstacleGroups.Add(new ObstacleGroup(new List<Obstacle>
+            {
+                new(new Vector2(0, 0.5f), Vector2.One, GameColor.Black),
+                new(new Vector2(0, 14.5f), Vector2.One, GameColor.White),
+            }, 5));
         }
     }
 }

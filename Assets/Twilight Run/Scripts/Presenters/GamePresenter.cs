@@ -19,6 +19,7 @@ namespace Avangardum.TwilightRun.Presenters
 
             gameModel.StateUpdated += OnGameStateUpdated;
             gameModel.ObstacleSpawned += OnObstacleSpawned;
+            gameModel.ObstacleRemoved += OnObstacleRemoved;
 
             gameView.ScreenTapped += OnScreenTapped;
         }
@@ -38,6 +39,11 @@ namespace Avangardum.TwilightRun.Presenters
         {
             _gameView.CreateObstacleView(e.Obstacle.Id, ModelVectorToViewVector(e.Obstacle.Position), 
                 ModelVectorToViewVector(e.Obstacle.Size, 1), GameColorToUnityColor(e.Obstacle.Color));
+        }
+        
+        private void OnObstacleRemoved(object sender, ObstacleRemovedEventArgs e)
+        {
+            _gameView.RemoveObstacleView(e.Id);
         }
 
         [Pure]
