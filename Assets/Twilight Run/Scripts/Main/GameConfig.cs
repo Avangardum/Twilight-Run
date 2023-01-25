@@ -1,4 +1,5 @@
-﻿using Avangardum.TwilightRun.Models;
+﻿using System.Collections.Generic;
+using Avangardum.TwilightRun.Models;
 using UnityEngine;
 
 namespace Avangardum.TwilightRun.Main
@@ -12,5 +13,7 @@ namespace Avangardum.TwilightRun.Main
         [field: SerializeField] public float StartSafeZoneSize { get; private set; }
         [field: SerializeField] public float WorldGenerationZoneForwardSize { get; private set; }
         [field: SerializeField] public float WorldGenerationZoneBackSize { get; private set; }
+        [SerializeField] private List<SerializableObstacleGroup> _obstacleGroups = new();
+        public IReadOnlyList<ObstacleGroup> ObstacleGroups => _obstacleGroups.ConvertAll(g => g.ToObstacleGroup());
     }
 }

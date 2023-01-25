@@ -8,6 +8,8 @@ namespace Avangardum.TwilightRun.Models
 {
     public class GameModel : IGameModel
     {
+        private static readonly Random Random = new Random();
+        
         private IGameConfig _gameConfig;
         
         private int _whiteCharacterVerticalDirection;
@@ -78,9 +80,9 @@ namespace Avangardum.TwilightRun.Models
             {
                 while (_whiteCharacterPosition.X + _gameConfig.WorldGenerationZoneForwardSize > _worldForwardEdgeXPosition)
                 {
-                    SpawnObstacle(new Vector2(_worldForwardEdgeXPosition, _gameConfig.MinCharacterYPosition), 
-                        Vector2.One, GameColor.Red);
-                    _worldForwardEdgeXPosition += 10;
+                    if (_gameConfig.ObstacleGroups.Count == 0) throw new InvalidOperationException("No obstacle groups.");
+                    var obstacleGroup = _gameConfig.ObstacleGroups[Random.Next(_gameConfig.ObstacleGroups.Count)];
+                    SpawnObstacleGroup(obstacleGroup);
                 }
             }
         }
@@ -91,6 +93,15 @@ namespace Avangardum.TwilightRun.Models
             Debug.Assert(new[] { _gameConfig.MinCharacterYPosition, _gameConfig.MaxCharacterYPosition }.
                 Contains(_whiteCharacterPosition.Y));
             _whiteCharacterVerticalDirection = _whiteCharacterPosition.Y == _gameConfig.MinCharacterYPosition ? 1 : -1;
+        }
+
+        private void SpawnObstacleGroup(ObstacleGroup obstacleGroup)
+        {
+            foreach (var obstacle in obstacleGroup.Obstacles)
+            {
+                SpawnObstacle(obstacle.Position + new Vector2(_worldForwardEdgeXPosition, 0), obstacle.Size, obstacle.Color);
+            }
+            _worldForwardEdgeXPosition += obstacleGroup.Size;
         }
 
         private void SpawnObstacle(Vector2 position, Vector2 size, GameColor color)

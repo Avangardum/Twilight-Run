@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using Avangardum.TwilightRun.Main;
 using NUnit.Framework;
 using Zenject;
@@ -11,13 +13,13 @@ namespace Avangardum.TwilightRun.Tests
     public class GameModelTests : ZenjectUnitTestFixture
     {
         private IGameModel _gameModel;
-        private IGameConfig _gameConfig;
+        private TestGameConfig _testGameConfig;
         
         [Inject]
-        public void Inject(IGameModel gameModel, IGameConfig gameConfig)
+        public void Inject(IGameModel gameModel, TestGameConfig testGameConfig)
         {
             _gameModel = gameModel;
-            _gameConfig = gameConfig;
+            _testGameConfig = testGameConfig;
         }
         
         [SetUp]
@@ -26,7 +28,8 @@ namespace Avangardum.TwilightRun.Tests
             Container.Bind<IGameModel>().To<GameModel>().AsSingle();
             const string gameConfigPath = "Assets/Twilight Run/Game Config.asset";
             var gameConfig = AssetDatabase.LoadAssetAtPath<GameConfig>(gameConfigPath);
-            Container.Bind<IGameConfig>().FromInstance(gameConfig).AsSingle();
+            var testGameConfig = new TestGameConfig(gameConfig);
+            Container.BindInterfacesAndSelfTo<TestGameConfig>().FromInstance(testGameConfig).AsSingle();
             
             Container.Inject(this);
         }
@@ -109,7 +112,7 @@ namespace Avangardum.TwilightRun.Tests
             Assert.That(_gameModel.Obstacles, Is.Not.Empty);
             Assert.That(wasObstacleSpawned, Is.True);
             var firstObstacle = _gameModel.Obstacles.OrderBy(o => o.Position.X).First();
-            Assert.That(firstObstacle.Position.X, Is.GreaterThanOrEqualTo(_gameConfig.StartSafeZoneSize));
+            Assert.That(firstObstacle.Position.X, Is.GreaterThanOrEqualTo(_testGameConfig.StartSafeZoneSize));
         }
 
         [TestCase(0.05f, 1)]
@@ -121,6 +124,27 @@ namespace Avangardum.TwilightRun.Tests
             _gameModel.StateUpdated += (_, _) => updateCount++;
             _gameModel.Update(deltaTime);
             Assert.That(updateCount, Is.EqualTo(expectedUpdateCount));
+        }
+
+        [Test]
+        public void ObstaclesFromConfigCreated()
+        {
+            _testGameConfig.ObstacleGroups.Clear();
+            var testObstacleGroup = new ObstacleGroup(new List<Obstacle>
+            {
+                new(Vector2.Zero, Vector2.One, GameColor.Red),
+                new(new Vector2(5, 0), Vector2.One, GameColor.Black),
+                new(new Vector2(10, 0), Vector2.One, GameColor.White),
+            }, 15);
+            _testGameConfig.ObstacleGroups.Add(testObstacleGroup);
+            
+            _gameModel.Update(0.01f);
+            var obstacles = _gameModel.Obstacles;
+            var safeZoneSize = _testGameConfig.StartSafeZoneSize;
+            Assert.That(obstacles, Has.Count.GreaterThanOrEqualTo(3));
+            Assert.That(obstacles[0].Position, Is.EqualTo(new Vector2(safeZoneSize, 0)));
+            Assert.That(obstacles[1].Position, Is.EqualTo(new Vector2(safeZoneSize + 5, 0)));
+            Assert.That(obstacles[2].Position, Is.EqualTo(new Vector2(safeZoneSize + 10, 0)));
         }
         
         private void Wait(float time, float timeStep = 0.02f)

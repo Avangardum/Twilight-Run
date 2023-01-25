@@ -1,4 +1,6 @@
-﻿namespace Avangardum.TwilightRun.Models
+﻿using System.Collections.Generic;
+
+namespace Avangardum.TwilightRun.Models
 {
     public interface IGameConfig
     {
@@ -15,5 +17,6 @@
         //   back         forward
         float WorldGenerationZoneForwardSize { get; }
         float WorldGenerationZoneBackSize { get; }
+        IReadOnlyList<ObstacleGroup> ObstacleGroups { get; }
     }
 }
