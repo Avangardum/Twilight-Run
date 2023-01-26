@@ -23,5 +23,6 @@ namespace Avangardum.TwilightRun.Models
         
         IReadOnlyList<ObstacleGroup> ObstacleGroups { get; }
         Vector2 CharacterSize { get; }
+        float ScorePerMeter { get; }
     }
 }

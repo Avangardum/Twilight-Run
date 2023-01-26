@@ -36,6 +36,7 @@ namespace Avangardum.TwilightRun.Models
         public Vector2 BlackCharacterPosition => _blackCharacterPosition;
         public IReadOnlyList<Obstacle> Obstacles => _obstacles;
         public bool IsGameOver { get; private set; }
+        public int Score => (int)(_whiteCharacterPosition.X * _gameConfig.ScorePerMeter);
 
         public void Update(float deltaTime)
         {

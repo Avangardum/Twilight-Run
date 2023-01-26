@@ -21,7 +21,8 @@ namespace Avangardum.TwilightRun.Tests
             public SVector2 WhiteCharacterPosition { get; set; }
             public SVector2 BlackCharacterPosition { get; set; }
             public IReadOnlyList<Obstacle> Obstacles { get; } = new List<Obstacle>();
-            public bool IsGameOver { get; }
+            public bool IsGameOver { get; set; }
+            public int Score { get; set; }
             public bool WasSwapCalled { get; set; }
 
             public void Update(float deltaTime) => StateUpdated?.Invoke(this, EventArgs.Empty);
@@ -45,6 +46,7 @@ namespace Avangardum.TwilightRun.Tests
             
             public UVector3 WhiteCharacterPosition { get; set; }
             public UVector3 BlackCharacterPosition { get; set; }
+            public int Score { get; set; }
             public UVector3? LastCreatedObstaclePosition { get; private set; }
             public UVector3? LastCreatedObstacleSize { get; private set; }
             public Color? LastCreatedObstacleColor { get; private set; }
@@ -127,6 +129,14 @@ namespace Avangardum.TwilightRun.Tests
         {
             _gameModel.InvokeObstacleRemoved(42);
             Assert.That(_gameView.LastRemovedObstacleId, Is.EqualTo(42));
+        }
+        
+        [Test]
+        public void UpdatesViewScoreOnModelStateUpdated()
+        {
+            _gameModel.Score = 42;
+            _gameModel.Update(0.01f);
+            Assert.That(_gameView.Score, Is.EqualTo(42));
         }
     }
 }

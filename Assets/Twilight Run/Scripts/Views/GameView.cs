@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Avangardum.TwilightRun.Presenters;
 using UnityEngine;
+using TMPro;
 
 namespace Avangardum.TwilightRun.Views
 {
@@ -10,6 +11,7 @@ namespace Avangardum.TwilightRun.Views
         [SerializeField] private GameObject _whiteCharacter;
         [SerializeField] private GameObject _blackCharacter;
         [SerializeField] private GameObject _obstaclePrefab;
+        [SerializeField] private TextMeshProUGUI _scoreText;
 
         private Dictionary<int, GameObject> _obstacleViewsById = new();
 
@@ -23,6 +25,11 @@ namespace Avangardum.TwilightRun.Views
         public Vector3 BlackCharacterPosition
         {
             set => _blackCharacter.transform.position = value;
+        }
+
+        public int Score
+        {
+            set => _scoreText.text = value.ToString();
         }
 
         public void CreateObstacleView(int id, Vector3 position, Vector3 size, Color color)

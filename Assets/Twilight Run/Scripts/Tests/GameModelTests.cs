@@ -231,6 +231,16 @@ namespace Avangardum.TwilightRun.Tests
             }
         }
         
+        [Test]
+        public void ScoreIncreasesAccordingToConfig()
+        {
+            var whiteCharacterXPosition = _gameModel.WhiteCharacterPosition.X;
+            Wait(1);
+            var whiteCharacterXMovement = _gameModel.WhiteCharacterPosition.X - whiteCharacterXPosition;
+            var expectedScore = (int)(whiteCharacterXMovement * _testGameConfig.ScorePerMeter);
+            Assert.That(_gameModel.Score, Is.EqualTo(expectedScore));
+        }
+        
         private void Wait(float time, float timeStep = 0.02f)
         {
             var timeLeft = time;

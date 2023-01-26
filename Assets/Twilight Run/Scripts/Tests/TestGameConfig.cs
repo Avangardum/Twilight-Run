@@ -14,6 +14,7 @@ namespace Avangardum.TwilightRun.Tests
         public TestGameConfig(IGameConfig sourceConfig)
         {
             CharacterSize = sourceConfig.CharacterSize;
+            ScorePerMeter = sourceConfig.ScorePerMeter;
             CharacterBaseHorizontalSpeed = sourceConfig.CharacterBaseHorizontalSpeed;
             CharacterMaxHorizontalSpeed = sourceConfig.CharacterMaxHorizontalSpeed;
             CharacterAcceleration = sourceConfig.CharacterAcceleration;
@@ -27,6 +28,7 @@ namespace Avangardum.TwilightRun.Tests
         }
 
         public Vector2 CharacterSize { get; }
+        public float ScorePerMeter { get; }
         public float CharacterBaseHorizontalSpeed { get; set; }
         public float CharacterAcceleration { get; set; }
         public float CharacterMaxHorizontalSpeed { get; set; }

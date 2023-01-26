@@ -28,6 +28,7 @@ namespace Avangardum.TwilightRun.Presenters
         {
             _gameView.WhiteCharacterPosition = ModelVectorToViewVector(_gameModel.WhiteCharacterPosition);
             _gameView.BlackCharacterPosition = ModelVectorToViewVector(_gameModel.BlackCharacterPosition);
+            _gameView.Score = _gameModel.Score;
         }
 
         private void OnScreenTapped(object sender, EventArgs e)
