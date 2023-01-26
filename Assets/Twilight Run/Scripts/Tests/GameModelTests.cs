@@ -188,6 +188,48 @@ namespace Avangardum.TwilightRun.Tests
             Assert.That(_gameModel.WhiteCharacterPosition.X, Is.EqualTo(whiteCharacterXPosition));
             Assert.That(_gameModel.BlackCharacterPosition.X, Is.EqualTo(blackCharacterXPosition));
         }
+
+        [Test]
+        public void CharactersAlwaysHaveSameXPosition()
+        {
+            for (int i = 0; i < 1000; i++)
+            {
+                Assert.That(_gameModel.WhiteCharacterPosition.X, Is.EqualTo(_gameModel.BlackCharacterPosition.X));
+                _gameModel.Update(0.02f);
+            }
+        }
+        
+        [Test]
+        public void CharactersAccelerate()
+        {
+            SetHarmlessObstacleGroupConfig();
+            var previousWhiteCharacterMovement = 0f;
+            for (int i = 0; i < 60; i++)
+            {
+                var whiteCharacterXPosition = _gameModel.WhiteCharacterPosition.X;
+                Wait(1);
+                var whiteCharacterXMovement = _gameModel.WhiteCharacterPosition.X - whiteCharacterXPosition;
+                Assert.That(whiteCharacterXMovement, Is.GreaterThan(previousWhiteCharacterMovement));
+                previousWhiteCharacterMovement = whiteCharacterXMovement;
+            }
+        }
+
+        [Test]
+        public void CharactersStopAcceleratingWhenMaxSpeedIsReached()
+        {
+            SetHarmlessObstacleGroupConfig();
+            Wait(600);
+            float? previousWhiteCharacterMovement = null;
+            for (int i = 0; i < 60; i++)
+            {
+                var whiteCharacterXPosition = _gameModel.WhiteCharacterPosition.X;
+                Wait(1);
+                var whiteCharacterXMovement = _gameModel.WhiteCharacterPosition.X - whiteCharacterXPosition;
+                if (previousWhiteCharacterMovement != null)
+                    Assert.That(whiteCharacterXMovement, Is.EqualTo(previousWhiteCharacterMovement));
+                previousWhiteCharacterMovement = whiteCharacterXMovement;
+            }
+        }
         
         private void Wait(float time, float timeStep = 0.02f)
         {

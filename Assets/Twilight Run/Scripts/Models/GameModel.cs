@@ -17,6 +17,7 @@ namespace Avangardum.TwilightRun.Models
         private Vector2 _whiteCharacterPosition;
         private Vector2 _blackCharacterPosition;
         private List<Obstacle> _obstacles = new();
+        private float _characterHorizontalSpeed;
 
         public GameModel(IGameConfig gameConfig)
         {
@@ -24,6 +25,7 @@ namespace Avangardum.TwilightRun.Models
             _whiteCharacterPosition = new(0, _gameConfig.MaxCharacterYPosition);
             _blackCharacterPosition = new(0, _gameConfig.MinCharacterYPosition);
             _worldForwardEdgeXPosition = _gameConfig.StartSafeZoneSize;
+            _characterHorizontalSpeed = gameConfig.CharacterBaseHorizontalSpeed;
         }
 
         public event EventHandler StateUpdated;
@@ -60,7 +62,9 @@ namespace Avangardum.TwilightRun.Models
 
             void ProcessMovement()
             {
-                var horizontalCharacterMovement = _gameConfig.CharacterHorizontalSpeed * deltaTime;
+                _characterHorizontalSpeed += _gameConfig.CharacterAcceleration * deltaTime;
+                _characterHorizontalSpeed = Math.Min(_characterHorizontalSpeed, _gameConfig.CharacterMaxHorizontalSpeed);
+                var horizontalCharacterMovement = _characterHorizontalSpeed * deltaTime;
                 var verticalWhiteCharacterMovement = _whiteCharacterVerticalDirection * (_gameConfig.CharacterVerticalSpeed * deltaTime);
                 var verticalBlackCharacterMovement = -verticalWhiteCharacterMovement;
                 var whiteCharacterMovement = new Vector2(horizontalCharacterMovement, verticalWhiteCharacterMovement);
