@@ -163,6 +163,32 @@ namespace Avangardum.TwilightRun.Tests
             Assert.That(wasObstacleRemoved, Is.True);
         }
         
+        [Test]
+        public void InactivityWithHarmlessObstaclesDoesntEndGameAndDoesntStopCharacters()
+        {
+            SetHarmlessObstacleGroupConfig();
+            Wait(10);
+            Assert.That(_gameModel.IsGameOver, Is.False);
+            var whiteCharacterXPosition = _gameModel.WhiteCharacterPosition.X;
+            var blackCharacterXPosition = _gameModel.BlackCharacterPosition.X;
+            Wait(1);
+            Assert.That(_gameModel.WhiteCharacterPosition.X, Is.Not.EqualTo(whiteCharacterXPosition));
+            Assert.That(_gameModel.BlackCharacterPosition.X, Is.Not.EqualTo(blackCharacterXPosition));
+        }
+        
+        [Test]
+        public void InactivityWithHarmfulObstaclesEndsGameAndStopsCharacters()
+        {
+            SetHarmfulObstacleGroupConfig();
+            Wait(10);
+            Assert.That(_gameModel.IsGameOver, Is.True);
+            var whiteCharacterXPosition = _gameModel.WhiteCharacterPosition.X;
+            var blackCharacterXPosition = _gameModel.BlackCharacterPosition.X;
+            Wait(1);
+            Assert.That(_gameModel.WhiteCharacterPosition.X, Is.EqualTo(whiteCharacterXPosition));
+            Assert.That(_gameModel.BlackCharacterPosition.X, Is.EqualTo(blackCharacterXPosition));
+        }
+        
         private void Wait(float time, float timeStep = 0.02f)
         {
             var timeLeft = time;
@@ -181,6 +207,16 @@ namespace Avangardum.TwilightRun.Tests
             {
                 new(new Vector2(0, 0.5f), Vector2.One, GameColor.Black),
                 new(new Vector2(0, 14.5f), Vector2.One, GameColor.White),
+            }, 5));
+        }
+        
+        private void SetHarmfulObstacleGroupConfig()
+        {
+            _testGameConfig.ObstacleGroups.Clear();
+            _testGameConfig.ObstacleGroups.Add(new ObstacleGroup(new List<Obstacle>
+            {
+                new(new Vector2(0, 0.5f), Vector2.One, GameColor.Red),
+                new(new Vector2(0, 14.5f), Vector2.One, GameColor.Red),
             }, 5));
         }
     }

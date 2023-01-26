@@ -1,5 +1,4 @@
 ﻿using System;
-using Avangardum.TwilightRun.Models;
 using UnityEngine;
 
 namespace Avangardum.TwilightRun.Presenters

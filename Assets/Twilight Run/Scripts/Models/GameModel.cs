@@ -8,7 +8,7 @@ namespace Avangardum.TwilightRun.Models
 {
     public class GameModel : IGameModel
     {
-        private static readonly Random Random = new Random();
+        private static readonly Random Random = new();
         
         private IGameConfig _gameConfig;
         
@@ -31,15 +31,17 @@ namespace Avangardum.TwilightRun.Models
         public event EventHandler<ObstacleRemovedEventArgs> ObstacleRemoved;
 
         public Vector2 WhiteCharacterPosition => _whiteCharacterPosition;
-
         public Vector2 BlackCharacterPosition => _blackCharacterPosition;
         public IReadOnlyList<Obstacle> Obstacles => _obstacles;
+        public bool IsGameOver { get; private set; }
 
         public void Update(float deltaTime)
         {
             if (deltaTime == 0) return;
             if (deltaTime is < 0 or float.PositiveInfinity or float.NaN)
                 throw new ArgumentOutOfRangeException(nameof(deltaTime), deltaTime, $"Invalid {nameof(deltaTime)} value.");
+            
+            if (IsGameOver) return;
             
             // If deltaTime is more than maxDeltaTime, unfold this update into several smaller updates.
             const float maxDeltaTime = 0.1f;
@@ -51,6 +53,7 @@ namespace Avangardum.TwilightRun.Models
 
             GenerateWorld();
             ProcessMovement();
+            CheckCollisions();
             CleanupWorld();
 
             StateUpdated?.Invoke(this, EventArgs.Empty);
@@ -101,6 +104,35 @@ namespace Avangardum.TwilightRun.Models
                     return _obstacles[0].Position.X < worldGenerationZoneBackEdgeX;
                 }
             }
+
+            void CheckCollisions()
+            {
+                var characterPositions = new List<Vector2> { WhiteCharacterPosition, BlackCharacterPosition };
+                var characterSizes = new List<Vector2> { _gameConfig.CharacterSize, _gameConfig.CharacterSize };
+                var characterColors = new List<GameColor> { GameColor.White, GameColor.Black };
+                var characterData = characterPositions
+                    .Zip(characterSizes, (position, size) => (position, size))
+                    .Zip(characterColors, (positionAndSize, color) => (positionAndSize.position, positionAndSize.size, color) )
+                    .ToList();
+                foreach (var (characterPosition, characterSize, characterColor) in characterData)
+                {
+                    foreach (var obstacle in _obstacles)
+                    {
+                        var obstaclePosition = obstacle.Position;
+                        var obstacleSize = obstacle.Size;
+                        var obstacleColor = obstacle.Color;
+                        
+                        var areColliding = 
+                            AabbUtil.DoAabbsIntersect(characterPosition, characterSize, obstaclePosition, obstacleSize) &&
+                            characterColor != obstacleColor;
+                        if (areColliding)
+                        {
+                            SetGameOver();
+                            return;
+                        }
+                    }
+                }
+            }
         }
 
         public void Swap()
@@ -131,6 +163,11 @@ namespace Avangardum.TwilightRun.Models
         {
             _obstacles.Remove(obstacle);
             ObstacleRemoved?.Invoke(this, new ObstacleRemovedEventArgs(obstacle.Id));
+        }
+        
+        private void SetGameOver()
+        {
+            IsGameOver = true;
         }
     }
 }

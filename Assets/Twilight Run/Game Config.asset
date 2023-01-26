@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ff6928e5c6a45249439dffc966e8012, type: 3}
   m_Name: Game Config
   m_EditorClassIdentifier: 
+  _characterSize: {x: 1, y: 2}
   <CharacterHorizontalSpeed>k__BackingField: 5
   <CharacterVerticalSpeed>k__BackingField: 10
   <MinCharacterYPosition>k__BackingField: 1

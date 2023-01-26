@@ -12,6 +12,7 @@ namespace Avangardum.TwilightRun.Models
         Vector2 WhiteCharacterPosition { get; }
         Vector2 BlackCharacterPosition { get; }
         IReadOnlyList<Obstacle> Obstacles { get; }
+        bool IsGameOver { get; }
 
         void Update(float deltaTime);
         void Swap();

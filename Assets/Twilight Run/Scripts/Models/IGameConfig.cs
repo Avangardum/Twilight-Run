@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Numerics;
 
 namespace Avangardum.TwilightRun.Models
 {
@@ -17,6 +18,8 @@ namespace Avangardum.TwilightRun.Models
         //   back         forward
         float WorldGenerationZoneForwardSize { get; }
         float WorldGenerationZoneBackSize { get; }
+        
         IReadOnlyList<ObstacleGroup> ObstacleGroups { get; }
+        Vector2 CharacterSize { get; }
     }
 }

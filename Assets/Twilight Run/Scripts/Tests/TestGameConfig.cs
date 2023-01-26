@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Numerics;
 using Avangardum.TwilightRun.Models;
 
 namespace Avangardum.TwilightRun.Tests
@@ -12,6 +13,7 @@ namespace Avangardum.TwilightRun.Tests
         
         public TestGameConfig(IGameConfig sourceConfig)
         {
+            CharacterSize = sourceConfig.CharacterSize;
             CharacterHorizontalSpeed = sourceConfig.CharacterHorizontalSpeed;
             CharacterVerticalSpeed = sourceConfig.CharacterVerticalSpeed;
             MinCharacterYPosition = sourceConfig.MinCharacterYPosition;
@@ -21,7 +23,8 @@ namespace Avangardum.TwilightRun.Tests
             WorldGenerationZoneBackSize = sourceConfig.WorldGenerationZoneBackSize;
             ObstacleGroups.AddRange(sourceConfig.ObstacleGroups);
         }
-        
+
+        public Vector2 CharacterSize { get; }
         public float CharacterHorizontalSpeed { get; set; }
         public float CharacterVerticalSpeed { get; set; }
         public float MinCharacterYPosition { get; set; }
