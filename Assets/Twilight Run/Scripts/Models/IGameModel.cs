@@ -18,5 +18,6 @@ namespace Avangardum.TwilightRun.Models
         void Update(float deltaTime);
         void Swap();
         event EventHandler<ObstacleRemovedEventArgs> ObstacleRemoved;
+        void Restart();
     }
 }

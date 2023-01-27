@@ -22,10 +22,7 @@ namespace Avangardum.TwilightRun.Models
         public GameModel(IGameConfig gameConfig)
         {
             _gameConfig = gameConfig;
-            _whiteCharacterPosition = new(0, _gameConfig.MaxCharacterYPosition);
-            _blackCharacterPosition = new(0, _gameConfig.MinCharacterYPosition);
-            _worldForwardEdgeXPosition = _gameConfig.StartSafeZoneSize;
-            _characterHorizontalSpeed = gameConfig.CharacterBaseHorizontalSpeed;
+            Restart();
         }
 
         public event EventHandler StateUpdated;
@@ -173,6 +170,15 @@ namespace Avangardum.TwilightRun.Models
         private void SetGameOver()
         {
             IsGameOver = true;
+        }
+        
+        public void Restart()
+        {
+            _whiteCharacterPosition = new(0, _gameConfig.MaxCharacterYPosition);
+            _blackCharacterPosition = new(0, _gameConfig.MinCharacterYPosition);
+            _worldForwardEdgeXPosition = _gameConfig.StartSafeZoneSize;
+            _characterHorizontalSpeed = _gameConfig.CharacterBaseHorizontalSpeed;
+            StateUpdated?.Invoke(this, EventArgs.Empty);
         }
     }
 }

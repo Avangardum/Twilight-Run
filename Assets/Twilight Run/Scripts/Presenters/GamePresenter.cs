@@ -51,7 +51,6 @@ namespace Avangardum.TwilightRun.Presenters
         private UVector3 ModelVectorToViewVector(SVector2 modelPosition, float x = 0) =>
             new(x, modelPosition.Y, modelPosition.X);
 
-        [Pure]
         private Color GameColorToUnityColor(GameColor gameColor) => gameColor switch
         {
             GameColor.White => Color.white,

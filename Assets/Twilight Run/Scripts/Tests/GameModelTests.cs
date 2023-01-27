@@ -240,6 +240,22 @@ namespace Avangardum.TwilightRun.Tests
             var expectedScore = (int)(whiteCharacterXMovement * _testGameConfig.ScorePerMeter);
             Assert.That(_gameModel.Score, Is.EqualTo(expectedScore));
         }
+
+        [Test]
+        public void RestartResetsState()
+        {
+            Wait(1);
+            var characterXPosition1 = _gameModel.WhiteCharacterPosition.X;
+            var score1 = _gameModel.Score;
+            _gameModel.Restart();
+            Assert.That(_gameModel.WhiteCharacterPosition.X, Is.EqualTo(0));
+            Assert.That(_gameModel.Score, Is.EqualTo(0));
+            Wait(1);
+            var characterXPosition2 = _gameModel.WhiteCharacterPosition.X;
+            var score2 = _gameModel.Score;
+            Assert.That(characterXPosition2, Is.EqualTo(characterXPosition1));
+            Assert.That(score2, Is.EqualTo(score1));
+        }
         
         private void Wait(float time, float timeStep = 0.02f)
         {
