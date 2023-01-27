@@ -28,7 +28,23 @@ MonoBehaviour:
     - Position: {x: 0, y: 0.5}
       Size: {x: 1, y: 1}
       Color: 2
-    - Position: {x: 0, y: 14.5}
+    - Position: {x: 0, y: 15.5}
       Size: {x: 1, y: 1}
       Color: 2
+    _size: 10
+  - _obstacles:
+    - Position: {x: 0, y: 4}
+      Size: {x: 1, y: 8}
+      Color: 0
+    - Position: {x: 0, y: 12}
+      Size: {x: 1, y: 8}
+      Color: 1
+    _size: 10
+  - _obstacles:
+    - Position: {x: 0, y: 4}
+      Size: {x: 1, y: 8}
+      Color: 1
+    - Position: {x: 0, y: 12}
+      Size: {x: 1, y: 8}
+      Color: 0
     _size: 10
