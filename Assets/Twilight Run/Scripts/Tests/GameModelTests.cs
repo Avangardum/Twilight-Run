@@ -230,7 +230,33 @@ namespace Avangardum.TwilightRun.Tests
                 previousWhiteCharacterMovement = whiteCharacterXMovement;
             }
         }
-        
+
+        [Test]
+        public void CharacterVerticalSpeedIncreases()
+        {
+            SetHarmlessObstacleGroupConfig();
+            _gameModel.Swap();
+            var swapTime1 = MeasureSwapTime();
+            Wait(60);
+            var swapTime2 = MeasureSwapTime();
+            Assert.That(swapTime2, Is.LessThan(swapTime1)); 
+
+            float MeasureSwapTime()
+            {
+                Assume.That(_gameModel.WhiteCharacterPosition.Y, Is.EqualTo(_testGameConfig.MaxCharacterYPosition)
+                    .Or.EqualTo(_testGameConfig.MinCharacterYPosition));
+                float timeElapsed = 0;
+                _gameModel.Swap();
+                do
+                {
+                    _gameModel.Update(0.02f);
+                    timeElapsed += 0.02f;
+                } while (_gameModel.WhiteCharacterPosition.Y != _testGameConfig.MinCharacterYPosition &&
+                         _gameModel.WhiteCharacterPosition.Y != _testGameConfig.MaxCharacterYPosition);
+                return timeElapsed;
+            }
+        }
+
         [Test]
         public void ScoreIncreasesAccordingToConfig()
         {

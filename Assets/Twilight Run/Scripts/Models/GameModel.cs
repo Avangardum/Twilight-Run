@@ -18,10 +18,14 @@ namespace Avangardum.TwilightRun.Models
         private Vector2 _blackCharacterPosition;
         private List<Obstacle> _obstacles = new();
         private float _characterHorizontalSpeed;
+        private float _characterVerticalSpeed;
+        private float _characterVerticalAcceleration;
 
         public GameModel(IGameConfig gameConfig)
         {
             _gameConfig = gameConfig;
+            _characterVerticalAcceleration = _gameConfig.CharacterHorizontalAcceleration * 
+                (_gameConfig.CharacterBaseVerticalSpeed / _gameConfig.CharacterBaseHorizontalSpeed);
             Restart();
         }
 
@@ -60,10 +64,12 @@ namespace Avangardum.TwilightRun.Models
 
             void ProcessMovement()
             {
-                _characterHorizontalSpeed += _gameConfig.CharacterAcceleration * deltaTime;
+                _characterHorizontalSpeed += _gameConfig.CharacterHorizontalAcceleration * deltaTime;
                 _characterHorizontalSpeed = Math.Min(_characterHorizontalSpeed, _gameConfig.CharacterMaxHorizontalSpeed);
+                _characterVerticalSpeed += _characterVerticalAcceleration * deltaTime;
+                
                 var horizontalCharacterMovement = _characterHorizontalSpeed * deltaTime;
-                var verticalWhiteCharacterMovement = _whiteCharacterVerticalDirection * (_gameConfig.CharacterVerticalSpeed * deltaTime);
+                var verticalWhiteCharacterMovement = _whiteCharacterVerticalDirection * (_characterVerticalSpeed * deltaTime);
                 var verticalBlackCharacterMovement = -verticalWhiteCharacterMovement;
                 var whiteCharacterMovement = new Vector2(horizontalCharacterMovement, verticalWhiteCharacterMovement);
                 var blackCharacterMovement = new Vector2(horizontalCharacterMovement, verticalBlackCharacterMovement);
@@ -178,6 +184,7 @@ namespace Avangardum.TwilightRun.Models
             _blackCharacterPosition = new(0, _gameConfig.MinCharacterYPosition);
             _worldForwardEdgeXPosition = _gameConfig.StartSafeZoneSize;
             _characterHorizontalSpeed = _gameConfig.CharacterBaseHorizontalSpeed;
+            _characterVerticalSpeed = _gameConfig.CharacterBaseVerticalSpeed;
             StateUpdated?.Invoke(this, EventArgs.Empty);
         }
     }

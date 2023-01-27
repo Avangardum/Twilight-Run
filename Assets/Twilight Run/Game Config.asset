@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _characterSize: {x: 1, y: 2}
   <CharacterBaseHorizontalSpeed>k__BackingField: 5
-  <CharacterAcceleration>k__BackingField: 0.05
+  <CharacterHorizontalAcceleration>k__BackingField: 0.05
   <CharacterMaxHorizontalSpeed>k__BackingField: 30
-  <CharacterVerticalSpeed>k__BackingField: 10
+  <CharacterBaseVerticalSpeed>k__BackingField: 10
   <MinCharacterYPosition>k__BackingField: 1
   <MaxCharacterYPosition>k__BackingField: 15
   <StartSafeZoneSize>k__BackingField: 25

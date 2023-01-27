@@ -6,9 +6,9 @@ namespace Avangardum.TwilightRun.Models
     public interface IGameConfig
     {
         float CharacterBaseHorizontalSpeed { get; }
-        float CharacterAcceleration { get; }
+        float CharacterHorizontalAcceleration { get; }
         float CharacterMaxHorizontalSpeed { get; }
-        float CharacterVerticalSpeed { get; }
+        float CharacterBaseVerticalSpeed { get; }
         float MinCharacterYPosition { get; }
         float MaxCharacterYPosition { get; }
         float StartSafeZoneSize { get; }

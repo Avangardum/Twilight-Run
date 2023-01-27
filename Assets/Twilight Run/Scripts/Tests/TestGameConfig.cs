@@ -17,8 +17,8 @@ namespace Avangardum.TwilightRun.Tests
             ScorePerMeter = sourceConfig.ScorePerMeter;
             CharacterBaseHorizontalSpeed = sourceConfig.CharacterBaseHorizontalSpeed;
             CharacterMaxHorizontalSpeed = sourceConfig.CharacterMaxHorizontalSpeed;
-            CharacterAcceleration = sourceConfig.CharacterAcceleration;
-            CharacterVerticalSpeed = sourceConfig.CharacterVerticalSpeed;
+            CharacterHorizontalAcceleration = sourceConfig.CharacterHorizontalAcceleration;
+            CharacterBaseVerticalSpeed = sourceConfig.CharacterBaseVerticalSpeed;
             MinCharacterYPosition = sourceConfig.MinCharacterYPosition;
             MaxCharacterYPosition = sourceConfig.MaxCharacterYPosition;
             StartSafeZoneSize = sourceConfig.StartSafeZoneSize;
@@ -30,9 +30,9 @@ namespace Avangardum.TwilightRun.Tests
         public Vector2 CharacterSize { get; }
         public float ScorePerMeter { get; }
         public float CharacterBaseHorizontalSpeed { get; set; }
-        public float CharacterAcceleration { get; set; }
+        public float CharacterHorizontalAcceleration { get; set; }
         public float CharacterMaxHorizontalSpeed { get; set; }
-        public float CharacterVerticalSpeed { get; set; }
+        public float CharacterBaseVerticalSpeed { get; set; }
         public float MinCharacterYPosition { get; set; }
         public float MaxCharacterYPosition { get; set; }
         public float StartSafeZoneSize { get; set; }
