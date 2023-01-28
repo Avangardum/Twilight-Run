@@ -8,6 +8,7 @@ namespace Avangardum.TwilightRun.Models
     {
         event EventHandler StateUpdated;
         event EventHandler<ObstacleSpawnedEventArgs> ObstacleSpawned;
+        event EventHandler<ObstacleRemovedEventArgs> ObstacleRemoved;
 
         Vector2 WhiteCharacterPosition { get; }
         Vector2 BlackCharacterPosition { get; }
@@ -17,7 +18,6 @@ namespace Avangardum.TwilightRun.Models
 
         void Update(float deltaTime);
         void Swap();
-        event EventHandler<ObstacleRemovedEventArgs> ObstacleRemoved;
         void Restart();
     }
 }

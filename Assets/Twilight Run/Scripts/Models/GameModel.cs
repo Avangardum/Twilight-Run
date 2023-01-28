@@ -11,6 +11,7 @@ namespace Avangardum.TwilightRun.Models
         private static readonly Random Random = new();
         
         private IGameConfig _gameConfig;
+        private ISaver _saver;
         
         private int _whiteCharacterVerticalDirection;
         private float _worldForwardEdgeXPosition;
@@ -21,9 +22,11 @@ namespace Avangardum.TwilightRun.Models
         private float _characterVerticalSpeed;
         private float _characterVerticalAcceleration;
 
-        public GameModel(IGameConfig gameConfig)
+        public GameModel(IGameConfig gameConfig, ISaver saver)
         {
             _gameConfig = gameConfig;
+            _saver = saver;
+            
             _characterVerticalAcceleration = _gameConfig.CharacterHorizontalAcceleration * 
                 (_gameConfig.CharacterBaseVerticalSpeed / _gameConfig.CharacterBaseHorizontalSpeed);
             Restart();
@@ -58,6 +61,7 @@ namespace Avangardum.TwilightRun.Models
             GenerateWorld();
             ProcessMovement();
             CheckCollisions();
+            UpdateHighScore();
             CleanupWorld();
 
             StateUpdated?.Invoke(this, EventArgs.Empty);
@@ -139,6 +143,14 @@ namespace Avangardum.TwilightRun.Models
                             return;
                         }
                     }
+                }
+            }
+            
+            void UpdateHighScore()
+            {
+                if (Score > _saver.HighScore)
+                {
+                    _saver.HighScore = Score;
                 }
             }
         }

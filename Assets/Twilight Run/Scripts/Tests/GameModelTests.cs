@@ -12,14 +12,21 @@ namespace Avangardum.TwilightRun.Tests
 {
     public class GameModelTests : ZenjectUnitTestFixture
     {
+        private class MockSaver : ISaver
+        {
+            public int HighScore { get; set; }
+        }
+
         private IGameModel _gameModel;
         private TestGameConfig _testGameConfig;
+        private MockSaver _saver;
         
         [Inject]
-        public void Inject(IGameModel gameModel, TestGameConfig testGameConfig)
+        private void Inject(IGameModel gameModel, TestGameConfig testGameConfig, MockSaver saver)
         {
             _gameModel = gameModel;
             _testGameConfig = testGameConfig;
+            _saver = saver;
         }
         
         [SetUp]
@@ -30,6 +37,7 @@ namespace Avangardum.TwilightRun.Tests
             var gameConfig = AssetDatabase.LoadAssetAtPath<GameConfig>(gameConfigPath);
             var testGameConfig = new TestGameConfig(gameConfig);
             Container.BindInterfacesAndSelfTo<TestGameConfig>().FromInstance(testGameConfig).AsSingle();
+            Container.BindInterfacesAndSelfTo<MockSaver>().AsSingle();
             
             Container.Inject(this);
         }
@@ -281,6 +289,24 @@ namespace Avangardum.TwilightRun.Tests
             var score2 = _gameModel.Score;
             Assert.That(characterXPosition2, Is.EqualTo(characterXPosition1));
             Assert.That(score2, Is.EqualTo(score1));
+        }
+
+        [Test]
+        public void SavesHighScore()
+        {
+            SetHarmlessObstacleGroupConfig();
+            const int initialHighScore = 10;
+            _saver.HighScore = initialHighScore;
+            while (_gameModel.Score <= initialHighScore)
+            {
+                Assert.That(_saver.HighScore, Is.EqualTo(initialHighScore));
+                Wait(1);
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                Assert.That(_saver.HighScore, Is.EqualTo(_gameModel.Score));
+                Wait(1);
+            }
         }
         
         private void Wait(float time, float timeStep = 0.02f)
