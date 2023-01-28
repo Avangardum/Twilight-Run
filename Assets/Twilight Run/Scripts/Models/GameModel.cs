@@ -197,6 +197,9 @@ namespace Avangardum.TwilightRun.Models
             _worldForwardEdgeXPosition = _gameConfig.StartSafeZoneSize;
             _characterHorizontalSpeed = _gameConfig.CharacterBaseHorizontalSpeed;
             _characterVerticalSpeed = _gameConfig.CharacterBaseVerticalSpeed;
+            IsGameOver = false;
+            _obstacles.ToList().ForEach(RemoveObstacle);
+
             StateUpdated?.Invoke(this, EventArgs.Empty);
         }
     }

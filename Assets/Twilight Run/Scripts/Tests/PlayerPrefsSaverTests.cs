@@ -34,5 +34,14 @@ namespace Avangardum.TwilightRun.Tests
             _saver.HighScore = highScore;
             Assert.That(_saver.HighScore, Is.EqualTo(highScore));
         }
+        
+        [Test]
+        public void ChangingHighScoreInvokesEvent()
+        {
+            var invoked = false;
+            _saver.HighScoreChanged += (_, _) => invoked = true;
+            _saver.HighScore = 1;
+            Assert.That(invoked, Is.True);
+        }
     }
 }

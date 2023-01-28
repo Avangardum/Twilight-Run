@@ -18,20 +18,25 @@ namespace Avangardum.TwilightRun.Tests
             public event EventHandler<ObstacleSpawnedEventArgs> ObstacleSpawned;
             public event EventHandler<ObstacleRemovedEventArgs> ObstacleRemoved;
             
-            public void Restart() { }
             public SVector2 WhiteCharacterPosition { get; set; }
             public SVector2 BlackCharacterPosition { get; set; }
             public IReadOnlyList<Obstacle> Obstacles { get; } = new List<Obstacle>();
             public bool IsGameOver { get; set; }
             public int Score { get; set; }
             public bool WasSwapCalled { get; set; }
+            public bool WasRestartCalled { get; private set; }
+
 
             public void Update(float deltaTime) => StateUpdated?.Invoke(this, EventArgs.Empty);
-
-
+            
             public void Swap()
             {
                 WasSwapCalled = true;
+            }
+
+            public void Restart()
+            {
+                WasRestartCalled = true;
             }
 
             public void InvokeObstacleSpawned(Obstacle obstacle) => 
@@ -44,10 +49,13 @@ namespace Avangardum.TwilightRun.Tests
         private class GameViewMock : IGameView
         {
             public event EventHandler ScreenTapped;
-            
+            public event EventHandler PlayButtonClicked;
+
             public UVector3 WhiteCharacterPosition { get; set; }
             public UVector3 BlackCharacterPosition { get; set; }
             public int Score { get; set; }
+            public int HighScore { get; set; }
+            public bool IsGameOver { get; set; }
             public UVector3? LastCreatedObstaclePosition { get; private set; }
             public UVector3? LastCreatedObstacleSize { get; private set; }
             public Color? LastCreatedObstacleColor { get; private set; }
@@ -66,10 +74,30 @@ namespace Avangardum.TwilightRun.Tests
             }
 
             public void InvokeScreenTapped() => ScreenTapped?.Invoke(this, EventArgs.Empty);
+            
+            public void InvokePlayButtonClicked() => PlayButtonClicked?.Invoke(this, EventArgs.Empty);
         }
         
+        private class SaverMock : Presenters.ISaver
+        {
+            private int _highScore;
+            public event EventHandler<HighScoreChangedEventArgs> HighScoreChanged;
+
+            public int HighScore
+            {
+                get => _highScore;
+                set
+                {
+                    if (_highScore == value) return;
+                    _highScore = value; 
+                    HighScoreChanged?.Invoke(this, new HighScoreChangedEventArgs(value));
+                }
+            }
+        }
+
         private GameModelMock _gameModel;
         private GameViewMock _gameView;
+        private SaverMock _saver;
 
         [SetUp]
         public new void Setup()
@@ -77,16 +105,18 @@ namespace Avangardum.TwilightRun.Tests
             Container.BindInterfacesAndSelfTo<GameModelMock>().AsSingle();
             Container.BindInterfacesAndSelfTo<GameViewMock>().AsSingle();
             Container.Bind<GamePresenter>().AsSingle();
+            Container.BindInterfacesAndSelfTo<SaverMock>().AsSingle();
 
             Container.Resolve<GamePresenter>();
             Container.Inject(this);
         }
 
         [Inject]
-        private void Inject(GameModelMock gameModel, GameViewMock gameView)
+        private void Inject(GameModelMock gameModel, GameViewMock gameView, SaverMock saver)
         {
             _gameModel = gameModel;
             _gameView = gameView;
+            _saver = saver;
         }
 
         private static readonly object[] UpdatesViewCharacterPositionsOnModelStateUpdatedCases =
@@ -138,6 +168,30 @@ namespace Avangardum.TwilightRun.Tests
             _gameModel.Score = 42;
             _gameModel.Update(0.01f);
             Assert.That(_gameView.Score, Is.EqualTo(42));
+        }
+        
+        [Test]
+        public void GameOverSetOnViewOnGameOver()
+        {
+            _gameModel.IsGameOver = true;
+            _gameModel.Update(0.01f);
+            Assert.That(_gameView.IsGameOver, Is.True);
+        }
+
+        [Test]
+        public void GameRestartedOnPlayButtonClicked()
+        {
+            Assume.That(_gameModel.WasRestartCalled, Is.False);
+            _gameView.InvokePlayButtonClicked();
+            Assert.That(_gameModel.WasRestartCalled, Is.True);
+        }
+        
+        [Test]
+        public void HighScoreSetOnViewOnHighScoreChanged()
+        {
+            Assume.That(_gameView.HighScore, Is.EqualTo(0));
+            _saver.HighScore = 42;
+            Assert.That(_gameView.HighScore, Is.EqualTo(42));
         }
     }
 }

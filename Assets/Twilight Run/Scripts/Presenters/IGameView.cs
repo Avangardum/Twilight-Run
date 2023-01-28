@@ -5,13 +5,16 @@ namespace Avangardum.TwilightRun.Presenters
 {
     public interface IGameView
     {
-        public event EventHandler ScreenTapped;
+        event EventHandler ScreenTapped;
+        event EventHandler PlayButtonClicked;
         
-        public Vector3 WhiteCharacterPosition { set; }
-        public Vector3 BlackCharacterPosition { set; }
-        public int Score { set; }
-        
-        public void CreateObstacleView(int id, Vector3 position, Vector3 size, Color color);
-        public void RemoveObstacleView(int id);
+        Vector3 WhiteCharacterPosition { set; }
+        Vector3 BlackCharacterPosition { set; }
+        int Score { set; }
+        int HighScore { set; }
+        bool IsGameOver { set; }
+
+        void CreateObstacleView(int id, Vector3 position, Vector3 size, Color color);
+        void RemoveObstacleView(int id);
     }
 }

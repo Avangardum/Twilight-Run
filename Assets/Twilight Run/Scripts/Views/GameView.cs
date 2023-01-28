@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Avangardum.TwilightRun.Presenters;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 namespace Avangardum.TwilightRun.Views
 {
@@ -12,10 +13,17 @@ namespace Avangardum.TwilightRun.Views
         [SerializeField] private GameObject _blackCharacter;
         [SerializeField] private GameObject _obstaclePrefab;
         [SerializeField] private TextMeshProUGUI _scoreText;
+        [SerializeField] private GameObject _gameOverPanel;
+        [SerializeField] private TextMeshProUGUI _gameOverPanelScoreText;
+        [SerializeField] private TextMeshProUGUI _gameOverPanelHighScoreText;
+        [SerializeField] private Button _gameOverPanelRestartButton;
+        [SerializeField] private Button _gameOverPanelMenuButton;
 
         private Dictionary<int, GameObject> _obstacleViewsById = new();
+        private bool _wasGameOverThisFrame;
 
         public event EventHandler ScreenTapped;
+        public event EventHandler PlayButtonClicked;
 
         public Vector3 WhiteCharacterPosition
         {
@@ -29,7 +37,26 @@ namespace Avangardum.TwilightRun.Views
 
         public int Score
         {
-            set => _scoreText.text = value.ToString();
+            set
+            {
+                _scoreText.text = value.ToString();
+                _gameOverPanelScoreText.text = value.ToString();
+            }
+        }
+        
+        public bool IsGameOver
+        {
+            private get => _gameOverPanel.activeSelf;
+            set
+            {
+                _gameOverPanel.SetActive(value);
+                if (value) _wasGameOverThisFrame = true;
+            }
+        }
+
+        public int HighScore
+        {
+            set => _gameOverPanelHighScoreText.text = value.ToString();
         }
 
         public void CreateObstacleView(int id, Vector3 position, Vector3 size, Color color)
@@ -50,12 +77,20 @@ namespace Avangardum.TwilightRun.Views
             Destroy(obstacleView);
         }
 
+        private void Awake()
+        {
+            _gameOverPanelRestartButton.onClick.AddListener(OnPlayButtonClicked);
+        }
+
+        private void OnPlayButtonClicked()
+        {
+            PlayButtonClicked?.Invoke(this, EventArgs.Empty);
+        }
+
         private void Update()
         {
-            if (Input.anyKeyDown)
-            {
-                ScreenTapped?.Invoke(this, EventArgs.Empty);
-            }
+            if (Input.anyKeyDown && !_wasGameOverThisFrame) ScreenTapped?.Invoke(this, EventArgs.Empty);
+            if (!IsGameOver) _wasGameOverThisFrame = false;
         }
     }
 }

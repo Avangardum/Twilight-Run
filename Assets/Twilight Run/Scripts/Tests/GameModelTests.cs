@@ -278,17 +278,21 @@ namespace Avangardum.TwilightRun.Tests
         [Test]
         public void RestartResetsState()
         {
-            Wait(1);
+            SetHarmfulObstacleGroupConfig();
+            Wait(10);
             var characterXPosition1 = _gameModel.WhiteCharacterPosition.X;
             var score1 = _gameModel.Score;
+            var obstaclesCount1 = _gameModel.Obstacles.Count;
             _gameModel.Restart();
             Assert.That(_gameModel.WhiteCharacterPosition.X, Is.EqualTo(0));
             Assert.That(_gameModel.Score, Is.EqualTo(0));
-            Wait(1);
+            Wait(10);
             var characterXPosition2 = _gameModel.WhiteCharacterPosition.X;
             var score2 = _gameModel.Score;
+            var obstaclesCount2 = _gameModel.Obstacles.Count;
             Assert.That(characterXPosition2, Is.EqualTo(characterXPosition1));
             Assert.That(score2, Is.EqualTo(score1));
+            Assert.That(obstaclesCount2, Is.EqualTo(obstaclesCount1));
         }
 
         [Test]

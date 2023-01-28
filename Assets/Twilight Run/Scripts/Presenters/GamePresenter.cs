@@ -11,17 +11,22 @@ namespace Avangardum.TwilightRun.Presenters
     {
         private IGameModel _gameModel;
         private IGameView _gameView;
+        private ISaver _saver;
 
-        public GamePresenter(IGameModel gameModel, IGameView gameView)
+        public GamePresenter(IGameModel gameModel, IGameView gameView, ISaver saver)
         {
             _gameModel = gameModel;
             _gameView = gameView;
+            _saver = saver;
 
-            gameModel.StateUpdated += OnGameStateUpdated;
-            gameModel.ObstacleSpawned += OnObstacleSpawned;
-            gameModel.ObstacleRemoved += OnObstacleRemoved;
+            _gameModel.StateUpdated += OnGameStateUpdated;
+            _gameModel.ObstacleSpawned += OnObstacleSpawned;
+            _gameModel.ObstacleRemoved += OnObstacleRemoved;
 
-            gameView.ScreenTapped += OnScreenTapped;
+            _gameView.ScreenTapped += OnScreenTapped;
+            _gameView.PlayButtonClicked += OnPlayButtonClicked;
+            
+            _saver.HighScoreChanged += OnHighScoreChanged;
         }
 
         private void OnGameStateUpdated(object sender, EventArgs e)
@@ -29,6 +34,12 @@ namespace Avangardum.TwilightRun.Presenters
             _gameView.WhiteCharacterPosition = ModelVectorToViewVector(_gameModel.WhiteCharacterPosition);
             _gameView.BlackCharacterPosition = ModelVectorToViewVector(_gameModel.BlackCharacterPosition);
             _gameView.Score = _gameModel.Score;
+            _gameView.IsGameOver = _gameModel.IsGameOver;
+        }
+
+        private void OnPlayButtonClicked(object sender, EventArgs e)
+        {
+            _gameModel.Restart();
         }
 
         private void OnScreenTapped(object sender, EventArgs e)
@@ -41,10 +52,15 @@ namespace Avangardum.TwilightRun.Presenters
             _gameView.CreateObstacleView(e.Obstacle.Id, ModelVectorToViewVector(e.Obstacle.Position), 
                 ModelVectorToViewVector(e.Obstacle.Size, 1), GameColorToUnityColor(e.Obstacle.Color));
         }
-        
+
         private void OnObstacleRemoved(object sender, ObstacleRemovedEventArgs e)
         {
             _gameView.RemoveObstacleView(e.Id);
+        }
+
+        private void OnHighScoreChanged(object sender, HighScoreChangedEventArgs e)
+        {
+            _gameView.HighScore = e.HighScore;
         }
 
         [Pure]

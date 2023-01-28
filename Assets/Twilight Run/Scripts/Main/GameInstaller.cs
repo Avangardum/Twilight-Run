@@ -18,7 +18,7 @@ namespace Avangardum.TwilightRun.Main
             Container.Bind<IGameView>().FromInstance(_gameView).AsSingle();
             Container.Bind<GamePresenter>().AsSingle().NonLazy();
             Container.Bind<IGameConfig>().FromInstance(_gameConfig).AsSingle();
-            Container.Bind<ISaver>().To<PlayerPrefsSaver>().AsSingle();
+            Container.BindInterfacesTo<PlayerPrefsSaver>().AsSingle();
         }
     }
 }
