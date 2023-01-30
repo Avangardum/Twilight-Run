@@ -13,6 +13,7 @@ namespace Avangardum.TwilightRun.Presenters
         int Score { set; }
         int HighScore { set; }
         bool IsGameOver { set; }
+        bool HasRelevantGameState { set; }
 
         void CreateObstacleView(int id, Vector3 position, Vector3 size, Color color);
         void RemoveObstacleView(int id);

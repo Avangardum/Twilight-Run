@@ -312,6 +312,14 @@ namespace Avangardum.TwilightRun.Tests
                 Wait(1);
             }
         }
+
+        [Test]
+        public void DoesNotBreakWhenStartSafeZoneIsHuge()
+        {
+            _testGameConfig.StartSafeZoneSize = 1000;
+            _gameModel.Restart();
+            Wait(10);
+        }
         
         private void Wait(float time, float timeStep = 0.02f)
         {

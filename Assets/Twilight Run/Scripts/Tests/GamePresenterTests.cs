@@ -56,6 +56,7 @@ namespace Avangardum.TwilightRun.Tests
             public int Score { get; set; }
             public int HighScore { get; set; }
             public bool IsGameOver { get; set; }
+            public bool HasRelevantGameState { get; set; }
             public UVector3? LastCreatedObstaclePosition { get; private set; }
             public UVector3? LastCreatedObstacleSize { get; private set; }
             public Color? LastCreatedObstacleColor { get; private set; }
@@ -192,6 +193,14 @@ namespace Avangardum.TwilightRun.Tests
             Assume.That(_gameView.HighScore, Is.EqualTo(0));
             _saver.HighScore = 42;
             Assert.That(_gameView.HighScore, Is.EqualTo(42));
+        }
+
+        [Test]
+        public void GameViewHasRelevantGameStateAfterFirstUpdate()
+        {
+            Assume.That(_gameView.HasRelevantGameState, Is.False);
+            _gameModel.Update(0.02f);
+            Assert.That(_gameView.HasRelevantGameState, Is.True);
         }
     }
 }

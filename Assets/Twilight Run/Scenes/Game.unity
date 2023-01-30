@@ -1839,6 +1839,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Black Character
       objectReference: {fileID: 0}
+    - target: {fileID: 8245193819694862052, guid: 225bfecd6ad609b4fa6cfc5925c217b1,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 225bfecd6ad609b4fa6cfc5925c217b1, type: 3}
 --- !u!1 &1015587858 stripped

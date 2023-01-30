@@ -35,6 +35,7 @@ namespace Avangardum.TwilightRun.Presenters
             _gameView.BlackCharacterPosition = ModelVectorToViewVector(_gameModel.BlackCharacterPosition);
             _gameView.Score = _gameModel.Score;
             _gameView.IsGameOver = _gameModel.IsGameOver;
+            _gameView.HasRelevantGameState = true;
         }
 
         private void OnPlayButtonClicked(object sender, EventArgs e)

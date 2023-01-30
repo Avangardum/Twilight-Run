@@ -111,10 +111,7 @@ namespace Avangardum.TwilightRun.Models
                     RemoveObstacle(_obstacles[0]);
                 }
 
-                bool IsCleanupNeeded()
-                {
-                    return _obstacles[0].Position.X < worldGenerationZoneBackEdgeX;
-                }
+                bool IsCleanupNeeded() => _obstacles.Count > 0 && _obstacles[0].Position.X < worldGenerationZoneBackEdgeX;
             }
 
             void CheckCollisions()
