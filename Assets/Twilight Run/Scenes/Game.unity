@@ -796,8 +796,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _whiteCharacter: {fileID: 9075320392117433327}
   _blackCharacter: {fileID: 1015587858}
-  _obstaclePrefab: {fileID: 5068600664353986956, guid: 46402e0865a7fbb4fa1d789fc78ea15a,
+  _obstaclePrefab: {fileID: 6523547158322186190, guid: 477639a68dbd2724eacee9855599579f,
     type: 3}
+  _whiteObstacleMaterial: {fileID: 2100000, guid: 29169bc87f4cd314fa7fd286debaaf01,
+    type: 2}
+  _blackObstacleMaterial: {fileID: 2100000, guid: a18579440f830fd48b13e1bb9fa0d663,
+    type: 2}
+  _redObstacleMaterial: {fileID: 2100000, guid: 26c6a61b790ef8b49bbf386a27ca2e80,
+    type: 2}
   _scoreText: {fileID: 108455737}
   _gameOverPanel: {fileID: 687785720}
   _gameOverPanelScoreText: {fileID: 1770399221}

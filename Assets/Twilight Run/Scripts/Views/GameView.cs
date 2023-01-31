@@ -4,6 +4,7 @@ using System.Linq;
 using Avangardum.TwilightRun.Presenters;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 namespace Avangardum.TwilightRun.Views
@@ -16,6 +17,9 @@ namespace Avangardum.TwilightRun.Views
         [SerializeField] private GameObject _whiteCharacter;
         [SerializeField] private GameObject _blackCharacter;
         [SerializeField] private GameObject _obstaclePrefab;
+        [SerializeField] private Material _whiteObstacleMaterial;
+        [SerializeField] private Material _blackObstacleMaterial;
+        [SerializeField] private Material _redObstacleMaterial;
         [SerializeField] private TextMeshProUGUI _scoreText;
         [SerializeField] private GameObject _gameOverPanel;
         [SerializeField] private TextMeshProUGUI _gameOverPanelScoreText;
@@ -88,8 +92,18 @@ namespace Avangardum.TwilightRun.Views
             obstacleView.name = string.Format(obstacleNameFormat, id);
             obstacleView.transform.position = position;
             obstacleView.transform.localScale = size;
-            obstacleView.GetComponent<Renderer>().material.color = color;
+            var obstacleViewQuadBox = obstacleView.GetComponent<QuadBox>();
+            Assert.IsNotNull(obstacleViewQuadBox);
+            obstacleViewQuadBox.Renderers.ForEach(r => r.material = GetObstacleMaterialForColor(color));
             _obstacleViewsById.Add(id, obstacleView);
+        }
+
+        private Material GetObstacleMaterialForColor(Color color)
+        {
+            if (color == Color.white) return _whiteObstacleMaterial;
+            if (color == Color.black) return _blackObstacleMaterial;
+            if (color == Color.red) return _redObstacleMaterial;
+            throw new ArgumentException($"Unknown color {color}");
         }
 
         public void RemoveObstacleView(int id)
