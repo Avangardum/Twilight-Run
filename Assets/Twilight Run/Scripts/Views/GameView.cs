@@ -22,8 +22,10 @@ namespace Avangardum.TwilightRun.Views
         [SerializeField] private TextMeshProUGUI _gameOverPanelHighScoreText;
         [SerializeField] private Button _gameOverPanelRestartButton;
         [SerializeField] private Button _gameOverPanelMenuButton;
+        [SerializeField] private GameObject _mainMenuPanel;
+        [SerializeField] private Button _mainMenuPanelPlayButton;
 
-        private bool _wasGameOverThisFrame;
+        private bool _wasGameOverThisFrame = true;
         private readonly Dictionary<int, GameObject> _obstacleViewsById = new();
         private Dictionary<GameObject, Animator> _characterAnimators;
         private bool _wasInitializedWithFirstRelevantGameState;
@@ -107,18 +109,27 @@ namespace Avangardum.TwilightRun.Views
         private void OnPlayButtonClicked()
         {
             PlayButtonClicked?.Invoke(this, EventArgs.Empty);
+            _mainMenuPanel.SetActive(false);
+        }
+
+        private void OnMainMenuButtonClicked()
+        {
+            _mainMenuPanel.SetActive(true);
+            _gameOverPanel.SetActive(false);
         }
 
         private void Awake()
         {
             _gameOverPanelRestartButton.onClick.AddListener(OnPlayButtonClicked);
+            _mainMenuPanelPlayButton.onClick.AddListener(OnPlayButtonClicked);
+            _gameOverPanelMenuButton.onClick.AddListener(OnMainMenuButtonClicked);
             _characterAnimators = new Dictionary<GameObject, Animator>
             {
                 [_whiteCharacter] = _whiteCharacter.GetComponentInChildren<Animator>(),
                 [_blackCharacter] = _blackCharacter.GetComponentInChildren<Animator>()
             };
         }
-
+        
         private void Update()
         {
             if (Input.anyKeyDown && !_wasGameOverThisFrame) ScreenTapped?.Invoke(this, EventArgs.Empty);

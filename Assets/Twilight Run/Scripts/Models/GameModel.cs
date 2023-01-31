@@ -29,7 +29,6 @@ namespace Avangardum.TwilightRun.Models
             
             _characterVerticalAcceleration = _gameConfig.CharacterHorizontalAcceleration * 
                 (_gameConfig.CharacterBaseVerticalSpeed / _gameConfig.CharacterBaseHorizontalSpeed);
-            Restart();
         }
 
         public event EventHandler StateUpdated;
@@ -39,7 +38,7 @@ namespace Avangardum.TwilightRun.Models
         public Vector2 WhiteCharacterPosition => _whiteCharacterPosition;
         public Vector2 BlackCharacterPosition => _blackCharacterPosition;
         public IReadOnlyList<Obstacle> Obstacles => _obstacles;
-        public bool IsGameOver { get; private set; }
+        public bool IsGameOver { get; private set; } = true;
         public int Score => (int)(_whiteCharacterPosition.X * _gameConfig.ScorePerMeter);
 
         public void Update(float deltaTime)

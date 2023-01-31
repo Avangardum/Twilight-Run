@@ -32,7 +32,7 @@ namespace Avangardum.TwilightRun.Tests
         [SetUp]
         public void CSetUp()
         {
-            Container.Bind<IGameModel>().To<GameModel>().AsSingle();
+            Container.Bind<IGameModel>().To<GameModel>().AsTransient();
             const string gameConfigPath = "Assets/Twilight Run/Game Config.asset";
             var gameConfig = AssetDatabase.LoadAssetAtPath<GameConfig>(gameConfigPath);
             var testGameConfig = new TestGameConfig(gameConfig);
@@ -40,6 +40,8 @@ namespace Avangardum.TwilightRun.Tests
             Container.BindInterfacesAndSelfTo<MockSaver>().AsSingle();
             
             Container.Inject(this);
+            
+            _gameModel.Restart();
         }
         
         [Test]
@@ -319,6 +321,15 @@ namespace Avangardum.TwilightRun.Tests
             _testGameConfig.StartSafeZoneSize = 1000;
             _gameModel.Restart();
             Wait(10);
+        }
+
+        [Test]
+        public void DoesNotDoAnythingUntilRestartCalled()
+        {
+            _gameModel = Container.Resolve<IGameModel>();
+            var whiteCharacterXPosition = _gameModel.WhiteCharacterPosition.X;
+            Wait(1);
+            Assert.That(_gameModel.WhiteCharacterPosition.X, Is.EqualTo(whiteCharacterXPosition));
         }
         
         private void Wait(float time, float timeStep = 0.02f)
