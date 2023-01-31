@@ -25,6 +25,7 @@ namespace Avangardum.TwilightRun.Views
         [SerializeField] private GameObject _mainMenuPanel;
         [SerializeField] private Button _mainMenuPanelPlayButton;
 
+        private bool _isGameOver = true;
         private bool _wasGameOverThisFrame = true;
         private readonly Dictionary<int, GameObject> _obstacleViewsById = new();
         private Dictionary<GameObject, Animator> _characterAnimators;
@@ -57,9 +58,10 @@ namespace Avangardum.TwilightRun.Views
         
         public bool IsGameOver
         {
-            private get => _gameOverPanel.activeSelf;
+            private get => _isGameOver;
             set
             {
+                _isGameOver = value;
                 _gameOverPanel.SetActive(value);
                 if (value) _wasGameOverThisFrame = true;
             }
@@ -106,10 +108,16 @@ namespace Avangardum.TwilightRun.Views
             _wasInitializedWithFirstRelevantGameState = true;
         }
 
+        private void OnGameRestarted()
+        {
+            _whiteCharacterPreviousPosition = null;
+        }
+
         private void OnPlayButtonClicked()
         {
             PlayButtonClicked?.Invoke(this, EventArgs.Empty);
             _mainMenuPanel.SetActive(false);
+            OnGameRestarted();
         }
 
         private void OnMainMenuButtonClicked()
