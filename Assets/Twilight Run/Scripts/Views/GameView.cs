@@ -16,10 +16,9 @@ namespace Avangardum.TwilightRun.Views
         
         [SerializeField] private GameObject _whiteCharacter;
         [SerializeField] private GameObject _blackCharacter;
-        [SerializeField] private GameObject _obstaclePrefab;
-        [SerializeField] private Material _whiteObstacleMaterial;
-        [SerializeField] private Material _blackObstacleMaterial;
-        [SerializeField] private Material _redObstacleMaterial;
+        [SerializeField] private GameObject _whiteObstaclePrefab;
+        [SerializeField] private GameObject _blackObstaclePrefab;
+        [SerializeField] private GameObject _redObstaclePrefab;
         [SerializeField] private TextMeshProUGUI _scoreText;
         [SerializeField] private GameObject _gameOverPanel;
         [SerializeField] private TextMeshProUGUI _gameOverPanelScoreText;
@@ -37,6 +36,8 @@ namespace Avangardum.TwilightRun.Views
         private Vector3? _whiteCharacterPreviousPosition;
         private float _minCharacterYPosition;
         private float _maxCharacterYPosition;
+        private RagdollControl _whiteCharacterRagdollControl;
+        private RagdollControl _blackCharacterRagdollControl;
 
         public event EventHandler ScreenTapped;
         public event EventHandler PlayButtonClicked;
@@ -67,9 +68,17 @@ namespace Avangardum.TwilightRun.Views
             {
                 _isGameOver = value;
                 _gameOverPanel.SetActive(value);
+                _whiteCharacterRagdollControl.IsRagdoll = value;
+                _blackCharacterRagdollControl.IsRagdoll = value;
+                if (value)
+                {
+                    SetRagdollGravity();
+                    SetRagdollSpeed();
+                }
                 if (value) _wasGameOverThisFrame = true;
             }
         }
+        
 
         public bool HasRelevantGameState
         {
@@ -84,25 +93,29 @@ namespace Avangardum.TwilightRun.Views
         {
             set => _gameOverPanelHighScoreText.text = value.ToString();
         }
+        
+        private Vector3 WhiteCharacterMovementThisFrame => 
+            _whiteCharacter.transform.position - _whiteCharacterPreviousPosition ?? Vector3.zero;
+        
+        private Vector3 WhiteCharacterSpeed => WhiteCharacterMovementThisFrame / Time.deltaTime;
 
         public void CreateObstacleView(int id, Vector3 position, Vector3 size, Color color)
         {
-            var obstacleView = Instantiate(_obstaclePrefab);
+            var obstacleView = Instantiate(GetObstaclePrefabForColor(color));
             const string obstacleNameFormat = "Obstacle {0}";
             obstacleView.name = string.Format(obstacleNameFormat, id);
             obstacleView.transform.position = position;
             obstacleView.transform.localScale = size;
             var obstacleViewQuadBox = obstacleView.GetComponent<QuadBox>();
             Assert.IsNotNull(obstacleViewQuadBox);
-            obstacleViewQuadBox.Renderers.ForEach(r => r.material = GetObstacleMaterialForColor(color));
             _obstacleViewsById.Add(id, obstacleView);
         }
 
-        private Material GetObstacleMaterialForColor(Color color)
+        private GameObject GetObstaclePrefabForColor(Color color)
         {
-            if (color == Color.white) return _whiteObstacleMaterial;
-            if (color == Color.black) return _blackObstacleMaterial;
-            if (color == Color.red) return _redObstacleMaterial;
+            if (color == Color.white) return _whiteObstaclePrefab;
+            if (color == Color.black) return _blackObstaclePrefab;
+            if (color == Color.red) return _redObstaclePrefab;
             throw new ArgumentException($"Unknown color {color}");
         }
 
@@ -120,6 +133,28 @@ namespace Avangardum.TwilightRun.Views
             _minCharacterYPosition = characterYPositions.Min();
             _maxCharacterYPosition = characterYPositions.Max();
             _wasInitializedWithFirstRelevantGameState = true;
+        }
+        
+        private void SetRagdollGravity()
+        {
+            var isWhiteCharacterGravityInversed = Math.Sign(WhiteCharacterMovementThisFrame.y) switch
+            {
+                1 => true,
+                -1 => false,
+                0 => _whiteCharacter.transform.position.y == _maxCharacterYPosition,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            var isBlackCharacterGravityInversed = !isWhiteCharacterGravityInversed;
+            _whiteCharacterRagdollControl.IsGravityInversed = isWhiteCharacterGravityInversed;
+            _blackCharacterRagdollControl.IsGravityInversed = isBlackCharacterGravityInversed;
+        }
+
+        private void SetRagdollSpeed()
+        {
+            _whiteCharacterRagdollControl.Velocity = WhiteCharacterSpeed;
+            var blackCharacterVelocity = WhiteCharacterSpeed;
+            blackCharacterVelocity.y *= -1;
+            _blackCharacterRagdollControl.Velocity = blackCharacterVelocity;
         }
 
         private void OnGameRestarted()
@@ -150,6 +185,8 @@ namespace Avangardum.TwilightRun.Views
                 [_whiteCharacter] = _whiteCharacter.GetComponentInChildren<Animator>(),
                 [_blackCharacter] = _blackCharacter.GetComponentInChildren<Animator>()
             };
+            _whiteCharacterRagdollControl = _whiteCharacter.GetComponentInChildren<RagdollControl>();
+            _blackCharacterRagdollControl = _blackCharacter.GetComponentInChildren<RagdollControl>();
         }
         
         private void Update()
@@ -164,22 +201,16 @@ namespace Avangardum.TwilightRun.Views
             void SetCharacterAnimatorParameters()
             {
                 if (_whiteCharacterPreviousPosition == null) return;
-                var whiteCharacterMovement = _whiteCharacter.transform.position - _whiteCharacterPreviousPosition;
-                var horizontalMovement = whiteCharacterMovement.Value.z;
-                var horizontalSpeed = horizontalMovement / Time.deltaTime;
                 var characterAnimators = _characterAnimators.Values.ToList();
-                characterAnimators.ForEach(a => a.SetFloat(HorizontalSpeedHash, horizontalSpeed));
-                var whiteCharacterVerticalMovement = whiteCharacterMovement.Value.y;
-                var isFalling = whiteCharacterVerticalMovement != 0;
+                characterAnimators.ForEach(a => a.SetFloat(HorizontalSpeedHash, WhiteCharacterSpeed.z));
+                var isFalling = WhiteCharacterMovementThisFrame.y != 0;
                 characterAnimators.ForEach(a => a.SetBool(IsFallingHash, isFalling));
             }
 
             void SetCharacterRotation()
             {
                 if (_whiteCharacterPreviousPosition == null) return;
-                var whiteCharacterYPosition = _whiteCharacter.transform.position.y;
-                var whiteCharacterVerticalMovement = whiteCharacterYPosition - _whiteCharacterPreviousPosition.Value.y;
-                var whiteCharacterVerticalDirection = Mathf.Sign(whiteCharacterVerticalMovement);
+                var whiteCharacterVerticalDirection = Mathf.Sign(WhiteCharacterMovementThisFrame.y);
                 if (whiteCharacterVerticalDirection == 0) return;
                 var whiteCharacterSwapStartYPosition = whiteCharacterVerticalDirection switch
                 {
@@ -194,7 +225,7 @@ namespace Avangardum.TwilightRun.Views
                     _ => throw new ArgumentOutOfRangeException()
                 };
                 var swapProgress = Mathf.InverseLerp(whiteCharacterSwapStartYPosition, whiteCharacterSwapEndYPosition,
-                    whiteCharacterYPosition);
+                    _whiteCharacter.transform.position.y);
                 const float swapProgressToStartZRotation = 0.1f;
                 const float swapProgressToEndZRotation = 0.5f;
                 var zRotationProgress = Mathf.InverseLerp(swapProgressToStartZRotation, swapProgressToEndZRotation,
