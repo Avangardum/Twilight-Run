@@ -14,6 +14,8 @@ namespace Avangardum.TwilightRun.Views
         private static readonly int HorizontalSpeedHash = Animator.StringToHash("Horizontal Speed");
         private static readonly int IsFallingHash = Animator.StringToHash("Is Falling");
         private static readonly int RunningHash = Animator.StringToHash("Running");
+        private const float CharacterHorizontalDistanceFromEnvironmentSectionToMoveIt = 210f;
+        private const float EnvironmentSectionShiftPerMove = 400f;
         
         [SerializeField] private GameObject _whiteCharacter;
         [SerializeField] private GameObject _blackCharacter;
@@ -28,6 +30,7 @@ namespace Avangardum.TwilightRun.Views
         [SerializeField] private Button _gameOverPanelMenuButton;
         [SerializeField] private GameObject _mainMenuPanel;
         [SerializeField] private Button _mainMenuPanelPlayButton;
+        [SerializeField] private List<GameObject> _environmentSections;
 
         private bool _isGameOver = true;
         private bool _wasGameOverThisFrame = true;
@@ -39,6 +42,7 @@ namespace Avangardum.TwilightRun.Views
         private float _maxCharacterYPosition;
         private RagdollControl _whiteCharacterRagdollControl;
         private RagdollControl _blackCharacterRagdollControl;
+        private List<Vector3> _environmentSectionDefaultPositions;
 
         public event EventHandler ScreenTapped;
         public event EventHandler PlayButtonClicked;
@@ -162,6 +166,11 @@ namespace Avangardum.TwilightRun.Views
         {
             _whiteCharacterPreviousPosition = null;
             _characterAnimators.Values.ToList().ForEach(a => a.Play(RunningHash));
+            foreach (var (environmentSection, defaultPos) in 
+                _environmentSections.Zip(_environmentSectionDefaultPositions, (a, b) => (a, b)))
+            {
+                environmentSection.transform.position = defaultPos;
+            }
         }
 
         private void OnPlayButtonClicked()
@@ -189,6 +198,7 @@ namespace Avangardum.TwilightRun.Views
             };
             _whiteCharacterRagdollControl = _whiteCharacter.GetComponentInChildren<RagdollControl>();
             _blackCharacterRagdollControl = _blackCharacter.GetComponentInChildren<RagdollControl>();
+            _environmentSectionDefaultPositions = _environmentSections.Select(s => s.transform.position).ToList();
         }
         
         private void Update()
@@ -197,7 +207,8 @@ namespace Avangardum.TwilightRun.Views
             if (!IsGameOver) _wasGameOverThisFrame = false;
             SetCharacterAnimatorParameters();
             SetCharacterRotation();
-
+            MoveEnvironmentSectionIfNecessary();
+            
             _whiteCharacterPreviousPosition = _whiteCharacter.transform.position;
 
             void SetCharacterAnimatorParameters()
@@ -248,6 +259,17 @@ namespace Avangardum.TwilightRun.Views
                 var blackCharacterZRotation = 180 - whiteCharacterZRotation;
                 _whiteCharacter.transform.eulerAngles = new Vector3(0, 0, whiteCharacterZRotation);
                 _blackCharacter.transform.eulerAngles = new Vector3(0, 0, blackCharacterZRotation);
+            }
+            
+            void MoveEnvironmentSectionIfNecessary()
+            {
+                var characterHorizontalDistanceFromBackSection = _whiteCharacter.transform.position.z -
+                    _environmentSections[0].transform.position.z;
+                if (characterHorizontalDistanceFromBackSection >= CharacterHorizontalDistanceFromEnvironmentSectionToMoveIt)
+                {
+                    _environmentSections[0].transform.Translate(Vector3.forward * EnvironmentSectionShiftPerMove, Space.World);
+                    (_environmentSections[0], _environmentSections[1]) = (_environmentSections[1], _environmentSections[0]);
+                }
             }
         }
     }
