@@ -12,12 +12,14 @@ namespace Avangardum.TwilightRun.Presenters
         private IGameModel _gameModel;
         private IGameView _gameView;
         private ISaver _saver;
+        private IGameConfig _gameConfig;
 
-        public GamePresenter(IGameModel gameModel, IGameView gameView, ISaver saver)
+        public GamePresenter(IGameModel gameModel, IGameView gameView, ISaver saver, IGameConfig gameConfig)
         {
             _gameModel = gameModel;
             _gameView = gameView;
             _saver = saver;
+            _gameConfig = gameConfig;
 
             _gameModel.StateUpdated += OnGameStateUpdated;
             _gameModel.ObstacleSpawned += OnObstacleSpawned;
@@ -51,7 +53,7 @@ namespace Avangardum.TwilightRun.Presenters
         private void OnObstacleSpawned(object sender, ObstacleSpawnedEventArgs e)
         {
             _gameView.CreateObstacleView(e.Obstacle.Id, ModelVectorToViewVector(e.Obstacle.Position), 
-                ModelVectorToViewVector(e.Obstacle.Size, 1), GameColorToUnityColor(e.Obstacle.Color));
+                ModelVectorToViewVector(e.Obstacle.Size, _gameConfig.ObstacleWidth), GameColorToUnityColor(e.Obstacle.Color));
         }
 
         private void OnObstacleRemoved(object sender, ObstacleRemovedEventArgs e)

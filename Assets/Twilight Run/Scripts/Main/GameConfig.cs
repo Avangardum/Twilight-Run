@@ -6,7 +6,7 @@ using UVector2 = UnityEngine.Vector2;
 
 namespace Avangardum.TwilightRun.Main
 {
-    public class GameConfig : ScriptableObject, IGameConfig
+    public class GameConfig : ScriptableObject, Models.IGameConfig, Presenters.IGameConfig
     {
         [SerializeField] private UVector2 _characterSize;
         [field: SerializeField] public float CharacterBaseHorizontalSpeed { get; private set; }
@@ -20,6 +20,7 @@ namespace Avangardum.TwilightRun.Main
         [field: SerializeField] public float WorldGenerationZoneBackSize { get; private set; }
         [field: SerializeField] public float ScorePerMeter { get; private set; }
         [SerializeField] private List<SerializableObstacleGroup> _obstacleGroups = new();
+        [field: SerializeField] public float ObstacleWidth { get; private set; }
         public IReadOnlyList<ObstacleGroup> ObstacleGroups => _obstacleGroups.ConvertAll(g => g.ToObstacleGroup());
         public SVector2 CharacterSize => new(_characterSize.x, _characterSize.y);
     }

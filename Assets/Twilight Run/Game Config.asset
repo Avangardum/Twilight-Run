@@ -56,3 +56,4 @@ MonoBehaviour:
       Size: {x: 1, y: 8}
       Color: 0
     _size: 10
+  <ObstacleWidth>k__BackingField: 1

@@ -11,7 +11,7 @@ namespace Avangardum.TwilightRun.Tests
             
         }
         
-        public TestGameConfig(IGameConfig sourceConfig)
+        public TestGameConfig(Models.IGameConfig sourceConfig)
         {
             CharacterSize = sourceConfig.CharacterSize;
             ScorePerMeter = sourceConfig.ScorePerMeter;

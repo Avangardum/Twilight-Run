@@ -34,7 +34,7 @@ namespace Avangardum.TwilightRun.Tests
         {
             Container.Bind<IGameModel>().To<GameModel>().AsTransient();
             const string gameConfigPath = "Assets/Twilight Run/Game Config.asset";
-            var gameConfig = AssetDatabase.LoadAssetAtPath<GameConfig>(gameConfigPath);
+            IGameConfig gameConfig = AssetDatabase.LoadAssetAtPath<GameConfig>(gameConfigPath);
             var testGameConfig = new TestGameConfig(gameConfig);
             Container.BindInterfacesAndSelfTo<TestGameConfig>().FromInstance(testGameConfig).AsSingle();
             Container.BindInterfacesAndSelfTo<MockSaver>().AsSingle();
