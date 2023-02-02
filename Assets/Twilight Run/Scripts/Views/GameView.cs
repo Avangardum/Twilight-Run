@@ -13,6 +13,7 @@ namespace Avangardum.TwilightRun.Views
     {
         private static readonly int HorizontalSpeedHash = Animator.StringToHash("Horizontal Speed");
         private static readonly int IsFallingHash = Animator.StringToHash("Is Falling");
+        private static readonly int RunningHash = Animator.StringToHash("Running");
         
         [SerializeField] private GameObject _whiteCharacter;
         [SerializeField] private GameObject _blackCharacter;
@@ -160,6 +161,7 @@ namespace Avangardum.TwilightRun.Views
         private void OnGameRestarted()
         {
             _whiteCharacterPreviousPosition = null;
+            _characterAnimators.Values.ToList().ForEach(a => a.Play(RunningHash));
         }
 
         private void OnPlayButtonClicked()
