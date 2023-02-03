@@ -304,6 +304,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 56796868}
   m_CullTransparentMesh: 1
+--- !u!114 &77637895 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 947747651398075411, guid: 23555fa55090ddb46bc4086ea4ec338b,
+    type: 3}
+  m_PrefabInstance: {fileID: 9075320392117433326}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27fe9a34e710434690a576154ba3ba97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &108455735
 GameObject:
   m_ObjectHideFlags: 0
@@ -782,7 +794,7 @@ GameObject:
   - component: {fileID: 503076073}
   - component: {fileID: 503076072}
   m_Layer: 0
-  m_Name: GameView
+  m_Name: Game View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -819,6 +831,10 @@ MonoBehaviour:
   _environmentSections:
   - {fileID: 996184460}
   - {fileID: 243536382}
+  _whiteCharacterAnimationEventSubject: {fileID: 77637895}
+  _audioPlayerPrefab: {fileID: 5985200038830365387, guid: 959980816cee29c4991bc2d0455f7833,
+    type: 3}
+  _stepSound: {fileID: 8300000, guid: 11417defa66d19046818fdd5e5f8d83b, type: 3}
 --- !u!4 &503076073
 Transform:
   m_ObjectHideFlags: 0

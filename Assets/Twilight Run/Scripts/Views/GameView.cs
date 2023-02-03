@@ -31,6 +31,9 @@ namespace Avangardum.TwilightRun.Views
         [SerializeField] private GameObject _mainMenuPanel;
         [SerializeField] private Button _mainMenuPanelPlayButton;
         [SerializeField] private List<GameObject> _environmentSections;
+        [SerializeField] private AnimationEventSubject _whiteCharacterAnimationEventSubject;
+        [SerializeField] private GameObject _audioPlayerPrefab;
+        [SerializeField] private AudioClip _stepSound;
 
         private bool _isGameOver = true;
         private bool _wasGameOverThisFrame = true;
@@ -43,6 +46,7 @@ namespace Avangardum.TwilightRun.Views
         private RagdollControl _whiteCharacterRagdollControl;
         private RagdollControl _blackCharacterRagdollControl;
         private List<Vector3> _environmentSectionDefaultPositions;
+        private Camera _camera;
 
         public event EventHandler ScreenTapped;
         public event EventHandler PlayButtonClicked;
@@ -71,6 +75,7 @@ namespace Avangardum.TwilightRun.Views
             private get => _isGameOver;
             set
             {
+                var previousValue = _isGameOver;
                 _isGameOver = value;
                 _gameOverPanel.SetActive(value);
                 _whiteCharacterRagdollControl.IsRagdoll = value;
@@ -81,9 +86,9 @@ namespace Avangardum.TwilightRun.Views
                     SetRagdollSpeed();
                 }
                 if (value) _wasGameOverThisFrame = true;
+                if (value && !previousValue) OnGameOver();
             }
         }
-        
 
         public bool HasRelevantGameState
         {
@@ -103,6 +108,8 @@ namespace Avangardum.TwilightRun.Views
             _whiteCharacter.transform.position - _whiteCharacterPreviousPosition ?? Vector3.zero;
         
         private Vector3 WhiteCharacterSpeed => WhiteCharacterMovementThisFrame / Time.deltaTime;
+        
+        private bool AreCharactersSwapping => WhiteCharacterMovementThisFrame.y != 0;
 
         public void CreateObstacleView(int id, Vector3 position, Vector3 size, Color color)
         {
@@ -161,6 +168,14 @@ namespace Avangardum.TwilightRun.Views
             blackCharacterVelocity.y *= -1;
             _blackCharacterRagdollControl.Velocity = blackCharacterVelocity;
         }
+        
+        private void PlaySound(AudioClip sound)
+        {
+            var audioPlayer = Instantiate(_audioPlayerPrefab).GetComponent<AudioSource>();
+            audioPlayer.transform.position = _camera.transform.position;
+            audioPlayer.PlayOneShot(sound);
+            Destroy(audioPlayer.gameObject, sound.length * 2);
+        }
 
         private void OnGameRestarted()
         {
@@ -172,6 +187,12 @@ namespace Avangardum.TwilightRun.Views
                 environmentSection.transform.position = defaultPos;
             }
         }
+        
+        private void OnGameOver()
+        {
+            PlaySound(_stepSound);
+        }
+
 
         private void OnPlayButtonClicked()
         {
@@ -184,6 +205,14 @@ namespace Avangardum.TwilightRun.Views
         {
             _mainMenuPanel.SetActive(true);
             _gameOverPanel.SetActive(false);
+        }
+
+        private void OnCharacterStepped(object sender, EventArgs e)
+        {
+            if (!AreCharactersSwapping)
+            {
+                PlaySound(_stepSound);
+            }
         }
 
         private void Awake()
@@ -199,8 +228,10 @@ namespace Avangardum.TwilightRun.Views
             _whiteCharacterRagdollControl = _whiteCharacter.GetComponentInChildren<RagdollControl>();
             _blackCharacterRagdollControl = _blackCharacter.GetComponentInChildren<RagdollControl>();
             _environmentSectionDefaultPositions = _environmentSections.Select(s => s.transform.position).ToList();
+            _whiteCharacterAnimationEventSubject.Stepped += OnCharacterStepped;
+            _camera = Camera.main;
         }
-        
+
         private void Update()
         {
             if (Input.anyKeyDown && !_wasGameOverThisFrame) ScreenTapped?.Invoke(this, EventArgs.Empty);
@@ -208,7 +239,8 @@ namespace Avangardum.TwilightRun.Views
             SetCharacterAnimatorParameters();
             SetCharacterRotation();
             MoveEnvironmentSectionIfNecessary();
-            
+            PlayJumpingOrLandingSoundIfNecessary();
+
             _whiteCharacterPreviousPosition = _whiteCharacter.transform.position;
 
             void SetCharacterAnimatorParameters()
@@ -269,6 +301,20 @@ namespace Avangardum.TwilightRun.Views
                 {
                     _environmentSections[0].transform.Translate(Vector3.forward * EnvironmentSectionShiftPerMove, Space.World);
                     (_environmentSections[0], _environmentSections[1]) = (_environmentSections[1], _environmentSections[0]);
+                }
+            }
+
+            void PlayJumpingOrLandingSoundIfNecessary()
+            {
+                var didCharactersLandThisFrame = AreCharactersSwapping &&
+                    ( _whiteCharacter.transform.position.y == _minCharacterYPosition ||
+                      _whiteCharacter.transform.position.y == _maxCharacterYPosition );
+                var didCharactersJumpThisFrame = AreCharactersSwapping &&
+                    ( _whiteCharacterPreviousPosition.Value.y == _minCharacterYPosition ||
+                      _whiteCharacterPreviousPosition.Value.y == _maxCharacterYPosition );
+                if (didCharactersLandThisFrame || didCharactersJumpThisFrame)
+                {
+                    PlaySound(_stepSound);
                 }
             }
         }
