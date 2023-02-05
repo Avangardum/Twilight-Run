@@ -24,7 +24,8 @@ MonoBehaviour:
   <WorldGenerationZoneBackSize>k__BackingField: 20
   <ScorePerMeter>k__BackingField: 0.25
   _obstacleGroups:
-  - _obstacles:
+  - _name: 2 Red Cubes
+    _obstacles:
     - Position: {x: 0, y: 0.5}
       Size: {x: 1, y: 1}
       Color: 2
@@ -32,7 +33,26 @@ MonoBehaviour:
       Size: {x: 1, y: 1}
       Color: 2
     _size: 12
-  - _obstacles:
+    _weight: 1
+    _difficulty: 0
+  - _name: Top Red Cube
+    _obstacles:
+    - Position: {x: 0, y: 15.5}
+      Size: {x: 1, y: 1}
+      Color: 2
+    _size: 12
+    _weight: 1
+    _difficulty: 0
+  - _name: Bottom Red Cube
+    _obstacles:
+    - Position: {x: 0, y: 0.5}
+      Size: {x: 1, y: 1}
+      Color: 2
+    _size: 12
+    _weight: 1
+    _difficulty: 0
+  - _name: 2 White Cubes
+    _obstacles:
     - Position: {x: 0, y: 0.5}
       Size: {x: 1, y: 1}
       Color: 0
@@ -40,7 +60,64 @@ MonoBehaviour:
       Size: {x: 1, y: 1}
       Color: 0
     _size: 12
-  - _obstacles:
+    _weight: 1
+    _difficulty: 0
+  - _name: Top White Cube
+    _obstacles:
+    - Position: {x: 0, y: 15.5}
+      Size: {x: 1, y: 1}
+      Color: 0
+    _size: 12
+    _weight: 1
+    _difficulty: 0
+  - _name: Bottom White Cube
+    _obstacles:
+    - Position: {x: 0, y: 0.5}
+      Size: {x: 1, y: 1}
+      Color: 0
+    _size: 12
+    _weight: 1
+    _difficulty: 0
+  - _name: 2 Black Cubes
+    _obstacles:
+    - Position: {x: 0, y: 0.5}
+      Size: {x: 1, y: 1}
+      Color: 1
+    - Position: {x: 0, y: 15.5}
+      Size: {x: 1, y: 1}
+      Color: 1
+    _size: 12
+    _weight: 1
+    _difficulty: 0
+  - _name: Top Black Cube
+    _obstacles:
+    - Position: {x: 0, y: 15.5}
+      Size: {x: 1, y: 1}
+      Color: 1
+    _size: 12
+    _weight: 1
+    _difficulty: 0
+  - _name: Bottom Black Cube
+    _obstacles:
+    - Position: {x: 0, y: 0.5}
+      Size: {x: 1, y: 1}
+      Color: 1
+    _size: 12
+    _weight: 1
+    _difficulty: 0
+  - _name: Full Column White Top
+    _obstacles:
+    - Position: {x: 0, y: 4}
+      Size: {x: 1, y: 8}
+      Color: 1
+    - Position: {x: 0, y: 12}
+      Size: {x: 1, y: 8}
+      Color: 0
+    _size: 12
+    _weight: 6
+    _difficulty: 0
+  - _name: Full Column Black Top
+    _obstacles:
     - Position: {x: 0, y: 4}
       Size: {x: 1, y: 8}
       Color: 0
@@ -48,12 +125,86 @@ MonoBehaviour:
       Size: {x: 1, y: 8}
       Color: 1
     _size: 12
-  - _obstacles:
-    - Position: {x: 0, y: 4}
+    _weight: 6
+    _difficulty: 0
+  - _name: Red Middle Column
+    _obstacles:
+    - Position: {x: 0, y: 8}
       Size: {x: 1, y: 8}
-      Color: 1
-    - Position: {x: 0, y: 12}
+      Color: 2
+    _size: 12
+    _weight: 1
+    _difficulty: 0
+  - _name: White Middle Column
+    _obstacles:
+    - Position: {x: 0, y: 8}
       Size: {x: 1, y: 8}
       Color: 0
     _size: 12
+    _weight: 1
+    _difficulty: 0
+  - _name: Black Middle Column
+    _obstacles:
+    - Position: {x: 0, y: 8}
+      Size: {x: 1, y: 8}
+      Color: 1
+    _size: 12
+    _weight: 1
+    _difficulty: 0
+  - _name: White Cube Then Full Column White Top
+    _obstacles:
+    - Position: {x: 0, y: 0.5}
+      Size: {x: 1, y: 1}
+      Color: 0
+    - Position: {x: 4, y: 4}
+      Size: {x: 1, y: 8}
+      Color: 1
+    - Position: {x: 4, y: 12}
+      Size: {x: 1, y: 8}
+      Color: 0
+    _size: 16
+    _weight: 2
+    _difficulty: 50
+  - _name: Black Cube Then Full Column White Top
+    _obstacles:
+    - Position: {x: 0, y: 15.5}
+      Size: {x: 1, y: 1}
+      Color: 1
+    - Position: {x: 4, y: 4}
+      Size: {x: 1, y: 8}
+      Color: 1
+    - Position: {x: 4, y: 12}
+      Size: {x: 1, y: 8}
+      Color: 0
+    _size: 16
+    _weight: 2
+    _difficulty: 50
+  - _name: White Cube Then Full Column Black Top
+    _obstacles:
+    - Position: {x: 0, y: 15.5}
+      Size: {x: 1, y: 1}
+      Color: 0
+    - Position: {x: 4, y: 12}
+      Size: {x: 1, y: 8}
+      Color: 1
+    - Position: {x: 4, y: 4}
+      Size: {x: 1, y: 8}
+      Color: 0
+    _size: 16
+    _weight: 2
+    _difficulty: 50
+  - _name: Black Cube Then Full Column Black Top
+    _obstacles:
+    - Position: {x: 0, y: 0.5}
+      Size: {x: 1, y: 1}
+      Color: 1
+    - Position: {x: 4, y: 12}
+      Size: {x: 1, y: 8}
+      Color: 1
+    - Position: {x: 4, y: 4}
+      Size: {x: 1, y: 8}
+      Color: 0
+    _size: 16
+    _weight: 2
+    _difficulty: 50
   <ObstacleWidth>k__BackingField: 1

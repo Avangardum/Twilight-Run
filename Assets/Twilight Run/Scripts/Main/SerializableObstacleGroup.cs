@@ -19,6 +19,7 @@ namespace Avangardum.TwilightRun.Main
             public GameColor Color;
         }
 
+        [SerializeField] private string _name;
         [SerializeField] private List<SerializableObstacle> _obstacles;
         [SerializeField] private float _size;
         [SerializeField] private int _weight = 1;
