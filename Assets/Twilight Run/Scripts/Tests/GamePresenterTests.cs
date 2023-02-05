@@ -15,7 +15,7 @@ namespace Avangardum.TwilightRun.Tests
 {
     public class GamePresenterTests : ZenjectUnitTestFixture
     {
-        private class GameModelMock : IGameModel
+        private class MockGameModel : IGameModel
         {
             public event EventHandler StateUpdated;
             public event EventHandler<ObstacleSpawnedEventArgs> ObstacleSpawned;
@@ -49,7 +49,7 @@ namespace Avangardum.TwilightRun.Tests
                 ObstacleRemoved?.Invoke(this, new ObstacleRemovedEventArgs(id));
         }
         
-        private class GameViewMock : IGameView
+        private class MockGameView : IGameView
         {
             public event EventHandler ScreenTapped;
             public event EventHandler PlayButtonClicked;
@@ -82,7 +82,7 @@ namespace Avangardum.TwilightRun.Tests
             public void InvokePlayButtonClicked() => PlayButtonClicked?.Invoke(this, EventArgs.Empty);
         }
         
-        private class SaverMock : Presenters.ISaver
+        private class MockSaver : Presenters.ISaver
         {
             private int _highScore;
             public event EventHandler<HighScoreChangedEventArgs> HighScoreChanged;
@@ -97,19 +97,21 @@ namespace Avangardum.TwilightRun.Tests
                     HighScoreChanged?.Invoke(this, new HighScoreChangedEventArgs(value));
                 }
             }
+            
+            public void SetHighScoreWithoutEvent(int highScore) => _highScore = highScore;
         }
 
-        private GameModelMock _gameModel;
-        private GameViewMock _gameView;
-        private SaverMock _saver;
+        private MockGameModel _gameModel;
+        private MockGameView _gameView;
+        private MockSaver _saver;
 
         [SetUp]
         public new void Setup()
         {
-            Container.BindInterfacesAndSelfTo<GameModelMock>().AsSingle();
-            Container.BindInterfacesAndSelfTo<GameViewMock>().AsSingle();
-            Container.Bind<GamePresenter>().AsSingle();
-            Container.BindInterfacesAndSelfTo<SaverMock>().AsSingle();
+            Container.BindInterfacesAndSelfTo<MockGameModel>().AsSingle();
+            Container.BindInterfacesAndSelfTo<MockGameView>().AsSingle();
+            Container.Bind<GamePresenter>().AsTransient();
+            Container.BindInterfacesAndSelfTo<MockSaver>().AsSingle();
             Container.Bind<IGameConfig>().FromInstance(TestUtil.GameConfig).AsSingle();
 
             Container.Resolve<GamePresenter>();
@@ -117,7 +119,7 @@ namespace Avangardum.TwilightRun.Tests
         }
 
         [Inject]
-        private void Inject(GameModelMock gameModel, GameViewMock gameView, SaverMock saver)
+        private void Inject(MockGameModel gameModel, MockGameView gameView, MockSaver saver)
         {
             _gameModel = gameModel;
             _gameView = gameView;
@@ -192,10 +194,19 @@ namespace Avangardum.TwilightRun.Tests
         }
         
         [Test]
-        public void HighScoreSetOnViewOnHighScoreChanged()
+        public void ViewHighScoreSetOnViewOnHighScoreChanged()
         {
             Assume.That(_gameView.HighScore, Is.EqualTo(0));
             _saver.HighScore = 42;
+            Assert.That(_gameView.HighScore, Is.EqualTo(42));
+        }
+
+        [Test]
+        public void ViewHighScoreSetOnPresenterCreation()
+        {
+            _saver.SetHighScoreWithoutEvent(42);
+            Assume.That(_gameView.HighScore, Is.EqualTo(0));
+            Container.Resolve<GamePresenter>();
             Assert.That(_gameView.HighScore, Is.EqualTo(42));
         }
 

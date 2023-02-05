@@ -29,6 +29,8 @@ namespace Avangardum.TwilightRun.Presenters
             _gameView.PlayButtonClicked += OnPlayButtonClicked;
             
             _saver.HighScoreChanged += OnHighScoreChanged;
+            
+            _gameView.HighScore = _saver.HighScore;
         }
 
         private void OnGameStateUpdated(object sender, EventArgs e)

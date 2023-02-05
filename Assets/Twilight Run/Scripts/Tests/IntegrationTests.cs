@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Linq;
 using Avangardum.TwilightRun.Models;
+using Avangardum.TwilightRun.Savers;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -14,11 +15,13 @@ namespace Avangardum.TwilightRun.Tests
         private GameObject _whiteCharacter;
         private GameObject _blackCharacter;
         private IGameModel _gameModel;
+        private PlayerPrefsSaver _saver;
 
         [Inject]
-        public void Inject(IGameModel gameModel)
+        public void Inject(IGameModel gameModel, PlayerPrefsSaver saver)
         {
             _gameModel = gameModel;
+            _saver = saver;
         }
         
         [UnitySetUp]
@@ -64,6 +67,16 @@ namespace Avangardum.TwilightRun.Tests
             var obstacles = Object.FindObjectsOfType<GameObject>()
                 .Where(go => go.name.StartsWith("Obstacle"));
             Assert.That(obstacles, Is.Not.Empty);
+        }
+
+        [UnityTest]
+        public IEnumerator HighScoreIsUpdated()
+        {
+            _saver.Clear();
+            Time.timeScale = 5;
+            yield return new WaitForSeconds(3);
+            Time.timeScale = 1;
+            Assert.That(_saver.HighScore, Is.GreaterThan(0));
         }
     }
 }
