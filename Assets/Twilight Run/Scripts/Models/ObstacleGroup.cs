@@ -1,21 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics;
 
 namespace Avangardum.TwilightRun.Models
 {
     public class ObstacleGroup
     {
-        public ObstacleGroup(IEnumerable<Obstacle> obstacles, float size)
+        public ObstacleGroup(IEnumerable<Obstacle> obstacles, float size, int weight = 1, int difficulty = 0)
         {
-            Debug.Assert(obstacles != null);
-            var obstaclesList = obstacles.ToList();
-            Debug.Assert(size >= obstaclesList.Sum(o => o.Size.X));
-            Obstacles = obstaclesList;
+            Obstacles = obstacles.ToList();
             Size = size;
+            Weight = weight;
+            Difficulty = difficulty;
         }
 
         public List<Obstacle> Obstacles { get; }
         public float Size { get; }
+        public int Weight { get; }
+        public int Difficulty { get; }
     }
 }

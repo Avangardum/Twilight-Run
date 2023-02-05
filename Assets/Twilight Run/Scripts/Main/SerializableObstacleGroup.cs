@@ -21,12 +21,14 @@ namespace Avangardum.TwilightRun.Main
 
         [SerializeField] private List<SerializableObstacle> _obstacles;
         [SerializeField] private float _size;
+        [SerializeField] private int _weight = 1;
+        [SerializeField] private int _difficulty;
         
         public ObstacleGroup ToObstacleGroup()
         {
             var obstacles = _obstacles.ConvertAll(o => 
                 new Obstacle(UVector2ToSVector2(o.Position), UVector2ToSVector2(o.Size), o.Color));
-            return new ObstacleGroup(obstacles, _size);
+            return new ObstacleGroup(obstacles, _size, _weight, _difficulty);
         }
         
         [Pure]

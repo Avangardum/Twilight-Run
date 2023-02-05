@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Avangardum.TwilightRun.Main;
 using NUnit.Framework;
 using Zenject;
 using Avangardum.TwilightRun.Models;
-using UnityEditor;
 
 namespace Avangardum.TwilightRun.Tests
 {
@@ -16,6 +14,8 @@ namespace Avangardum.TwilightRun.Tests
         {
             public int HighScore { get; set; }
         }
+        
+        private const float DefaultTimeStep = 0.02f;
 
         private IGameModel _gameModel;
         private TestGameConfig _testGameConfig;
@@ -33,9 +33,7 @@ namespace Avangardum.TwilightRun.Tests
         public void CSetUp()
         {
             Container.Bind<IGameModel>().To<GameModel>().AsTransient();
-            const string gameConfigPath = "Assets/Twilight Run/Game Config.asset";
-            IGameConfig gameConfig = AssetDatabase.LoadAssetAtPath<GameConfig>(gameConfigPath);
-            var testGameConfig = new TestGameConfig(gameConfig);
+            var testGameConfig = new TestGameConfig(TestUtil.GameConfig);
             Container.BindInterfacesAndSelfTo<TestGameConfig>().FromInstance(testGameConfig).AsSingle();
             Container.BindInterfacesAndSelfTo<MockSaver>().AsSingle();
             
@@ -139,14 +137,15 @@ namespace Avangardum.TwilightRun.Tests
         [Test]
         public void ObstaclesFromConfigCreated()
         {
-            _testGameConfig.ObstacleGroups.Clear();
-            var testObstacleGroup = new ObstacleGroup(new List<Obstacle>
+            SetObstacleGroupConfig(new List<ObstacleGroup>
             {
-                new(Vector2.Zero, Vector2.One, GameColor.Red),
-                new(new Vector2(5, 0), Vector2.One, GameColor.Black),
-                new(new Vector2(10, 0), Vector2.One, GameColor.White),
-            }, 15);
-            _testGameConfig.ObstacleGroups.Add(testObstacleGroup);
+                new ObstacleGroup(new List<Obstacle>
+                {
+                    new Obstacle(Vector2.Zero, Vector2.One, GameColor.Red),
+                    new Obstacle(new Vector2(5, 0), Vector2.One, GameColor.Black),
+                    new Obstacle(new Vector2(10, 0), Vector2.One, GameColor.White),
+                }, 15)
+            });
             
             _gameModel.Update(0.01f);
             var obstacles = _gameModel.Obstacles;
@@ -303,10 +302,13 @@ namespace Avangardum.TwilightRun.Tests
             SetHarmlessObstacleGroupConfig();
             const int initialHighScore = 10;
             _saver.HighScore = initialHighScore;
+            float timeElapsed = 0;
             while (_gameModel.Score <= initialHighScore)
             {
                 Assert.That(_saver.HighScore, Is.EqualTo(initialHighScore));
                 Wait(1);
+                timeElapsed += 1;
+                if (timeElapsed > 10) Assert.Fail("High score was not saved");
             }
             for (int i = 0; i < 10; i++)
             {
@@ -331,8 +333,68 @@ namespace Avangardum.TwilightRun.Tests
             Wait(1);
             Assert.That(_gameModel.WhiteCharacterPosition.X, Is.EqualTo(whiteCharacterXPosition));
         }
+
+        [Test]
+        public void ObstacleGroupsWithBiggerWeightAreSpawnedMoreOften()
+        {
+            SetObstacleGroupConfig(new List<ObstacleGroup>
+            {
+                new ObstacleGroup(new List<Obstacle>
+                {
+                    new Obstacle(new Vector2(0, 10), Vector2.One, GameColor.Black)
+                }, 5),
+                new ObstacleGroup(new List<Obstacle>
+                {
+                    new Obstacle(new Vector2(0, 10), Vector2.One, GameColor.White)
+                }, 5, 10)
+            });
+            var whiteObstaclesCount = 0;
+            var blackObstaclesCount = 0;
+            _gameModel.ObstacleSpawned += (_, args) =>
+            {
+                if (args.Obstacle.Color == GameColor.White)
+                    whiteObstaclesCount++;
+                else if (args.Obstacle.Color == GameColor.Black)
+                    blackObstaclesCount++;
+            };
+            Wait(600);
+            Assert.That(blackObstaclesCount, Is.GreaterThan(0));
+            Assert.That(whiteObstaclesCount, Is.GreaterThan(0));
+            var whiteToBlackRatio = (float)whiteObstaclesCount / blackObstaclesCount;
+            Assert.That(whiteToBlackRatio, Is.InRange(8, 12));
+        }
+
+        [Test] public void ObstacleGroupsWithNonZeroDifficultyAreSpawnedOnlyWhenScoreIsHighEnough()
+        {
+            const int secondGroupDifficulty = 50;
+            SetObstacleGroupConfig(new List<ObstacleGroup>
+            {
+                new ObstacleGroup(new List<Obstacle>
+                {
+                    new Obstacle(new Vector2(0, 10), Vector2.One, GameColor.Black)
+                }, 5),
+                new ObstacleGroup(new List<Obstacle>
+                {
+                    new Obstacle(new Vector2(0, 10), Vector2.One, GameColor.White)
+                }, 5, 1, secondGroupDifficulty)
+            });
+            var whiteObstaclesCount = 0;
+            var blackObstaclesCount = 0;
+            _gameModel.ObstacleSpawned += (_, args) =>
+            {
+                if (args.Obstacle.Color == GameColor.White)
+                    whiteObstaclesCount++;
+                else if (args.Obstacle.Color == GameColor.Black)
+                    blackObstaclesCount++;
+            };
+            WaitForScore(secondGroupDifficulty - 1);
+            Assert.That(blackObstaclesCount, Is.GreaterThan(0));
+            Assert.That(whiteObstaclesCount, Is.EqualTo(0));
+            Wait(60);
+            Assert.That(whiteObstaclesCount, Is.GreaterThan(0));
+        }
         
-        private void Wait(float time, float timeStep = 0.02f)
+        private void Wait(float time, float timeStep = DefaultTimeStep)
         {
             var timeLeft = time;
             while (timeLeft >= timeStep)
@@ -342,25 +404,53 @@ namespace Avangardum.TwilightRun.Tests
             }
             _gameModel.Update(timeLeft);
         }
+        
+        private void WaitForScore(int targetScore, float timeout = 600, float timeStep = DefaultTimeStep)
+        {
+            float timeElapsed = 0;
+            while (_gameModel.Score < targetScore)
+            {
+                _gameModel.Update(timeStep);
+                timeElapsed += timeStep;
+                if (timeElapsed > timeout) Assert.Fail($"{nameof(WaitForScore)} timed out");
+            }
+        }
 
         private void SetHarmlessObstacleGroupConfig()
         {
-            _testGameConfig.ObstacleGroups.Clear();
-            _testGameConfig.ObstacleGroups.Add(new ObstacleGroup(new List<Obstacle>
+            SetObstacleGroupConfig(new List<ObstacleGroup>
             {
-                new(new Vector2(0, 0.5f), Vector2.One, GameColor.Black),
-                new(new Vector2(0, 14.5f), Vector2.One, GameColor.White),
-            }, 5));
+                new ObstacleGroup(new List<Obstacle>
+                {
+                    new(new Vector2(0, 0.5f), Vector2.One, GameColor.Black),
+                    new(new Vector2(0, 14.5f), Vector2.One, GameColor.White),
+                }, 5)
+            });
         }
         
         private void SetHarmfulObstacleGroupConfig()
         {
-            _testGameConfig.ObstacleGroups.Clear();
-            _testGameConfig.ObstacleGroups.Add(new ObstacleGroup(new List<Obstacle>
+            SetObstacleGroupConfig(new List<ObstacleGroup>
             {
-                new(new Vector2(0, 0.5f), Vector2.One, GameColor.Red),
-                new(new Vector2(0, 14.5f), Vector2.One, GameColor.Red),
-            }, 5));
+                new ObstacleGroup(new List<Obstacle>
+                {
+                    new Obstacle(new Vector2(0, 0.5f), Vector2.One, GameColor.Red),
+                    new Obstacle(new Vector2(0, 14.5f), Vector2.One, GameColor.Red),
+                }, 5)
+            });
+        }
+        
+        private void SetObstacleGroupConfig(List<ObstacleGroup> obstacleGroups)
+        {
+            _testGameConfig.ObstacleGroups.Clear();
+            _testGameConfig.ObstacleGroups.AddRange(obstacleGroups);
+            RecreateGameModel();
+        }
+
+        private void RecreateGameModel()
+        {
+            _gameModel = Container.Resolve<IGameModel>();
+            _gameModel.Restart();
         }
     }
 }

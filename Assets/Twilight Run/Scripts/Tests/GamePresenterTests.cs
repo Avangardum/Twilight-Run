@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Avangardum.TwilightRun.Main;
 using Zenject;
 using Avangardum.TwilightRun.Models;
 using Avangardum.TwilightRun.Presenters;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
+using IGameConfig = Avangardum.TwilightRun.Presenters.IGameConfig;
 using UVector3 = UnityEngine.Vector3;
 using SVector2 = System.Numerics.Vector2;
 
@@ -107,6 +110,7 @@ namespace Avangardum.TwilightRun.Tests
             Container.BindInterfacesAndSelfTo<GameViewMock>().AsSingle();
             Container.Bind<GamePresenter>().AsSingle();
             Container.BindInterfacesAndSelfTo<SaverMock>().AsSingle();
+            Container.Bind<IGameConfig>().FromInstance(TestUtil.GameConfig).AsSingle();
 
             Container.Resolve<GamePresenter>();
             Container.Inject(this);

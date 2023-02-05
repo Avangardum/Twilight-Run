@@ -21,6 +21,7 @@ namespace Avangardum.TwilightRun.Models
         private float _characterHorizontalSpeed;
         private float _characterVerticalSpeed;
         private float _characterVerticalAcceleration;
+        private List<ObstacleGroup> _unfoldedObstacleGroups;
 
         public GameModel(IGameConfig gameConfig, ISaver saver)
         {
@@ -29,8 +30,10 @@ namespace Avangardum.TwilightRun.Models
             
             _characterVerticalAcceleration = _gameConfig.CharacterHorizontalAcceleration * 
                 (_gameConfig.CharacterBaseVerticalSpeed / _gameConfig.CharacterBaseHorizontalSpeed);
-        }
 
+            _unfoldedObstacleGroups = _gameConfig.ObstacleGroups.SelectMany(UnfoldObstacleGroup).ToList();
+        }
+        
         public event EventHandler StateUpdated;
         public event EventHandler<ObstacleSpawnedEventArgs> ObstacleSpawned;
         public event EventHandler<ObstacleRemovedEventArgs> ObstacleRemoved;
@@ -97,7 +100,10 @@ namespace Avangardum.TwilightRun.Models
                 while (_whiteCharacterPosition.X + _gameConfig.WorldGenerationZoneForwardSize > _worldForwardEdgeXPosition)
                 {
                     if (_gameConfig.ObstacleGroups.Count == 0) throw new InvalidOperationException("No obstacle groups.");
-                    var obstacleGroup = _gameConfig.ObstacleGroups[Random.Next(_gameConfig.ObstacleGroups.Count)];
+                    var availableObstacleGroups = _unfoldedObstacleGroups
+                        .Where(og => og.Difficulty <= Score)
+                        .ToList();
+                    var obstacleGroup = availableObstacleGroups[Random.Next(availableObstacleGroups.Count)];
                     SpawnObstacleGroup(obstacleGroup);
                 }
             }
@@ -158,6 +164,20 @@ namespace Avangardum.TwilightRun.Models
                 Contains(_whiteCharacterPosition.Y));
             _whiteCharacterVerticalDirection = _whiteCharacterPosition.Y == _gameConfig.MinCharacterYPosition ? 1 : -1;
         }
+        
+        public void Restart()
+        {
+            _whiteCharacterPosition = new(0, _gameConfig.MaxCharacterYPosition);
+            _blackCharacterPosition = new(0, _gameConfig.MinCharacterYPosition);
+            _worldForwardEdgeXPosition = _gameConfig.StartSafeZoneSize;
+            _characterHorizontalSpeed = _gameConfig.CharacterBaseHorizontalSpeed;
+            _characterVerticalSpeed = _gameConfig.CharacterBaseVerticalSpeed;
+            IsGameOver = false;
+            _obstacles.ToList().ForEach(RemoveObstacle);
+
+            StateUpdated?.Invoke(this, EventArgs.Empty);
+        }
+
 
         private void SpawnObstacleGroup(ObstacleGroup obstacleGroup)
         {
@@ -186,17 +206,13 @@ namespace Avangardum.TwilightRun.Models
             IsGameOver = true;
         }
         
-        public void Restart()
+        /// <summary>
+        /// Converts an obstacle group to a list of obstacle groups with weight of 1.
+        /// </summary>
+        private List<ObstacleGroup> UnfoldObstacleGroup(ObstacleGroup inputGroup)
         {
-            _whiteCharacterPosition = new(0, _gameConfig.MaxCharacterYPosition);
-            _blackCharacterPosition = new(0, _gameConfig.MinCharacterYPosition);
-            _worldForwardEdgeXPosition = _gameConfig.StartSafeZoneSize;
-            _characterHorizontalSpeed = _gameConfig.CharacterBaseHorizontalSpeed;
-            _characterVerticalSpeed = _gameConfig.CharacterBaseVerticalSpeed;
-            IsGameOver = false;
-            _obstacles.ToList().ForEach(RemoveObstacle);
-
-            StateUpdated?.Invoke(this, EventArgs.Empty);
+            var outputGroup = new ObstacleGroup(inputGroup.Obstacles, inputGroup.Size, 1, inputGroup.Difficulty);
+            return Enumerable.Repeat(outputGroup, inputGroup.Weight).ToList();
         }
     }
 }
