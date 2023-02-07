@@ -13,16 +13,16 @@ MonoBehaviour:
   m_Name: Game Config
   m_EditorClassIdentifier: 
   _characterSize: {x: 1, y: 2}
-  <CharacterBaseHorizontalSpeed>k__BackingField: 5
-  <CharacterHorizontalAcceleration>k__BackingField: 0.05
-  <CharacterMaxHorizontalSpeed>k__BackingField: 30
-  <CharacterBaseVerticalSpeed>k__BackingField: 10
+  <CharacterBaseHorizontalSpeed>k__BackingField: 10
+  <CharacterHorizontalAcceleration>k__BackingField: 0.1
+  <CharacterMaxHorizontalSpeed>k__BackingField: 60
+  <CharacterBaseVerticalSpeed>k__BackingField: 20
   <MinCharacterYPosition>k__BackingField: 1
   <MaxCharacterYPosition>k__BackingField: 15
-  <StartSafeZoneSize>k__BackingField: 25
+  <StartSafeZoneSize>k__BackingField: 30
   <WorldGenerationZoneForwardSize>k__BackingField: 100
   <WorldGenerationZoneBackSize>k__BackingField: 20
-  <ScorePerMeter>k__BackingField: 0.25
+  <ScorePerMeter>k__BackingField: 0.2
   _obstacleGroups:
   - _name: 2 Red Cubes
     _obstacles:
@@ -164,7 +164,7 @@ MonoBehaviour:
       Color: 0
     _size: 16
     _weight: 2
-    _difficulty: 50
+    _difficulty: 80
   - _name: Black Cube Then Full Column White Top
     _obstacles:
     - Position: {x: 0, y: 15.5}
@@ -178,7 +178,7 @@ MonoBehaviour:
       Color: 0
     _size: 16
     _weight: 2
-    _difficulty: 50
+    _difficulty: 80
   - _name: White Cube Then Full Column Black Top
     _obstacles:
     - Position: {x: 0, y: 15.5}
@@ -192,7 +192,7 @@ MonoBehaviour:
       Color: 0
     _size: 16
     _weight: 2
-    _difficulty: 50
+    _difficulty: 80
   - _name: Black Cube Then Full Column Black Top
     _obstacles:
     - Position: {x: 0, y: 0.5}
@@ -206,5 +206,49 @@ MonoBehaviour:
       Color: 0
     _size: 16
     _weight: 2
-    _difficulty: 50
+    _difficulty: 80
+  - _name: Red Middle Bar And Top White Cube
+    _obstacles:
+    - Position: {x: 2.5, y: 8}
+      Size: {x: 5, y: 1}
+      Color: 2
+    - Position: {x: 2.5, y: 15.5}
+      Size: {x: 1, y: 1}
+      Color: 0
+    _size: 16
+    _weight: 2
+    _difficulty: 80
+  - _name: Red Middle Bar And Top Black Cube
+    _obstacles:
+    - Position: {x: 2.5, y: 8}
+      Size: {x: 5, y: 1}
+      Color: 2
+    - Position: {x: 2.5, y: 15.5}
+      Size: {x: 1, y: 1}
+      Color: 1
+    _size: 16
+    _weight: 2
+    _difficulty: 80
+  - _name: Red Middle Bar And Bottom White Cube
+    _obstacles:
+    - Position: {x: 2.5, y: 8}
+      Size: {x: 5, y: 1}
+      Color: 2
+    - Position: {x: 2.5, y: 0.5}
+      Size: {x: 1, y: 1}
+      Color: 0
+    _size: 16
+    _weight: 2
+    _difficulty: 80
+  - _name: Red Middle Bar And Bottom Black Cube
+    _obstacles:
+    - Position: {x: 2.5, y: 8}
+      Size: {x: 5, y: 1}
+      Color: 2
+    - Position: {x: 2.5, y: 0.5}
+      Size: {x: 1, y: 1}
+      Color: 1
+    _size: 16
+    _weight: 2
+    _difficulty: 80
   <ObstacleWidth>k__BackingField: 1
