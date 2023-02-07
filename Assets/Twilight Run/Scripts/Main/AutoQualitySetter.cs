@@ -15,6 +15,12 @@ namespace Avangardum.TwilightRun.Main
 
         private void Awake()
         {
+            // If this is not the first scene load, don't do anything.
+            if (Time.time > 0)
+            {
+                Destroy(gameObject);
+                return;
+            }
             Application.targetFrameRate = 60;
             Assert.AreEqual(1, QualitySettings.GetQualityLevel());
         }
