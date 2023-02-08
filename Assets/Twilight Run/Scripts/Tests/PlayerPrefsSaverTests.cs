@@ -36,6 +36,13 @@ namespace Avangardum.TwilightRun.Tests
         }
         
         [Test]
+        public void SavesAbdLoadsAreAdsRemoved([Values] bool areAdsRemoved)
+        {
+            _saver.AreAdsRemoved = areAdsRemoved;
+            Assert.That(_saver.AreAdsRemoved, Is.EqualTo(areAdsRemoved));
+        }
+        
+        [Test]
         public void ChangingHighScoreInvokesEvent()
         {
             var invoked = false;
