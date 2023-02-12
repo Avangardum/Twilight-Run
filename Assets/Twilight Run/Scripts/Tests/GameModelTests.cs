@@ -176,8 +176,11 @@ namespace Avangardum.TwilightRun.Tests
         public void InactivityWithHarmlessObstaclesDoesntEndGameAndDoesntStopCharacters()
         {
             SetHarmlessObstacleGroupConfig();
+            bool wasGameOverTriggered = false;
+            _gameModel.GameOver += (_, _) => wasGameOverTriggered = true; 
             Wait(10);
             Assert.That(_gameModel.IsGameOver, Is.False);
+            Assert.That(wasGameOverTriggered, Is.False);
             var whiteCharacterXPosition = _gameModel.WhiteCharacterPosition.X;
             var blackCharacterXPosition = _gameModel.BlackCharacterPosition.X;
             Wait(1);
@@ -189,8 +192,11 @@ namespace Avangardum.TwilightRun.Tests
         public void InactivityWithHarmfulObstaclesEndsGameAndStopsCharacters()
         {
             SetHarmfulObstacleGroupConfig();
+            bool wasGameOverTriggered = false;
+            _gameModel.GameOver += (_, _) => wasGameOverTriggered = true; 
             Wait(10);
             Assert.That(_gameModel.IsGameOver, Is.True);
+            Assert.That(wasGameOverTriggered, Is.True);
             var whiteCharacterXPosition = _gameModel.WhiteCharacterPosition.X;
             var blackCharacterXPosition = _gameModel.BlackCharacterPosition.X;
             Wait(1);

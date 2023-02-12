@@ -20,7 +20,8 @@ namespace Avangardum.TwilightRun.Tests
             public event EventHandler StateUpdated;
             public event EventHandler<ObstacleSpawnedEventArgs> ObstacleSpawned;
             public event EventHandler<ObstacleRemovedEventArgs> ObstacleRemoved;
-            
+            public event EventHandler GameOver;
+
             public SVector2 WhiteCharacterPosition { get; set; }
             public SVector2 BlackCharacterPosition { get; set; }
             public IReadOnlyList<Obstacle> Obstacles { get; } = new List<Obstacle>();

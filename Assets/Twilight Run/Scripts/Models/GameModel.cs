@@ -37,6 +37,7 @@ namespace Avangardum.TwilightRun.Models
         public event EventHandler StateUpdated;
         public event EventHandler<ObstacleSpawnedEventArgs> ObstacleSpawned;
         public event EventHandler<ObstacleRemovedEventArgs> ObstacleRemoved;
+        public event EventHandler GameOver;
 
         public Vector2 WhiteCharacterPosition => _whiteCharacterPosition;
         public Vector2 BlackCharacterPosition => _blackCharacterPosition;
@@ -204,6 +205,7 @@ namespace Avangardum.TwilightRun.Models
         private void SetGameOver()
         {
             IsGameOver = true;
+            GameOver?.Invoke(this, EventArgs.Empty);
         }
         
         /// <summary>
