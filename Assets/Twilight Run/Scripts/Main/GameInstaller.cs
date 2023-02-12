@@ -1,4 +1,5 @@
-﻿using Avangardum.TwilightRun.Models;
+﻿using Avangardum.TwilightRun.Ads;
+using Avangardum.TwilightRun.Models;
 using Avangardum.TwilightRun.Presenters;
 using Avangardum.TwilightRun.Savers;
 using Avangardum.TwilightRun.Views;
@@ -19,6 +20,7 @@ namespace Avangardum.TwilightRun.Main
             Container.Bind<GamePresenter>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<GameConfig>().FromInstance(_gameConfig).AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerPrefsSaver>().AsSingle();
+            Container.Bind<AdManager>().AsSingle().NonLazy();
         }
     }
 }
