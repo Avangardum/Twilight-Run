@@ -20,8 +20,8 @@ MonoBehaviour:
   <MinCharacterYPosition>k__BackingField: 1
   <MaxCharacterYPosition>k__BackingField: 15
   <StartSafeZoneSize>k__BackingField: 30
-  <WorldGenerationZoneForwardSize>k__BackingField: 100
-  <WorldGenerationZoneBackSize>k__BackingField: 20
+  <WorldGenerationZoneForwardSize>k__BackingField: 150
+  <WorldGenerationZoneBackSize>k__BackingField: 30
   <ScorePerMeter>k__BackingField: 0.2
   _obstacleGroups:
   - _name: 2 Red Cubes

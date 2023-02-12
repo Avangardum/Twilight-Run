@@ -14,8 +14,8 @@ namespace Avangardum.TwilightRun.Views
         private static readonly int HorizontalSpeedHash = Animator.StringToHash("Horizontal Speed");
         private static readonly int IsFallingHash = Animator.StringToHash("Is Falling");
         private static readonly int RunningHash = Animator.StringToHash("Running");
-        private const float CharacterHorizontalDistanceFromEnvironmentSectionToMoveIt = 210f;
-        private const float EnvironmentSectionShiftPerMove = 400f;
+        private const float CharacterHorizontalDistanceFromEnvironmentSectionToMoveIt = 1010f;
+        private const float EnvironmentSectionShiftPerMove = 2000f;
         
         [SerializeField] private GameObject _whiteCharacter;
         [SerializeField] private GameObject _blackCharacter;
