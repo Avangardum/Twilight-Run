@@ -20,7 +20,7 @@ namespace Avangardum.TwilightRun.Main
             Container.Bind<GamePresenter>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<GameConfig>().FromInstance(_gameConfig).AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerPrefsSaver>().AsSingle();
-            Container.Bind<AdManager>().AsSingle().NonLazy();
+            Container.Bind<UnityAdsManager>().AsSingle().NonLazy();
         }
     }
 }
