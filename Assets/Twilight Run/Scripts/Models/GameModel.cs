@@ -44,6 +44,7 @@ namespace Avangardum.TwilightRun.Models
         public IReadOnlyList<Obstacle> Obstacles => _obstacles;
         public bool IsGameOver { get; private set; } = true;
         public int Score => (int)(_whiteCharacterPosition.X * _gameConfig.ScorePerMeter);
+        public bool IsPaused { get; set; } // TODO add pause
 
         public void Update(float deltaTime)
         {

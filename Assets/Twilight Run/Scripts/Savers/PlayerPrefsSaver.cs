@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Avangardum.TwilightRun.Savers
 {
     // ReSharper disable once RedundantNameQualifier
-    public class PlayerPrefsSaver : Models.ISaver, Presenters.ISaver, InAppPurchases.ISaver
+    public class PlayerPrefsSaver : Models.ISaver, Presenters.ISaver, InAppPurchases.ISaver, Ads.ISaver
     {
         private const string HighScoreKey = "High Score";
         private const string AreAdsRemovedKey = "Are Ads Removed";

@@ -27,6 +27,7 @@ namespace Avangardum.TwilightRun.Tests
             public IReadOnlyList<Obstacle> Obstacles { get; } = new List<Obstacle>();
             public bool IsGameOver { get; set; }
             public int Score { get; set; }
+            public bool IsPaused { get; set; }
             public bool WasSwapCalled { get; set; }
             public bool WasRestartCalled { get; private set; }
 

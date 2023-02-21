@@ -16,6 +16,7 @@ namespace Avangardum.TwilightRun.Models
         IReadOnlyList<Obstacle> Obstacles { get; }
         bool IsGameOver { get; }
         int Score { get; }
+        bool IsPaused { get; set; }
 
         void Update(float deltaTime);
         void Swap();
