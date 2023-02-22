@@ -73,6 +73,7 @@ namespace Avangardum.TwilightRun.Ads
         {
             _gameModel.IsPaused = false;
             _lastAdTime = Time.time;
+            LoadAd();
         }
         
         private async void OnGameOver(object sender, EventArgs e)
