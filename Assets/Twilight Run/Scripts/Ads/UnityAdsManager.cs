@@ -71,13 +71,15 @@ namespace Avangardum.TwilightRun.Ads
 
         public void OnUnityAdsShowComplete(string placementId, UnityAdsShowCompletionState showCompletionState)
         {
+            _gameModel.IsPaused = false;
             _lastAdTime = Time.time;
         }
         
         private async void OnGameOver(object sender, EventArgs e)
         {
+            if (!AreAdsEnabled) return;
             await Task.Delay(AdShowDelay);
-            if ((!_lastAdTime.HasValue || Time.time - _lastAdTime.Value >= MinAdInterval) && AreAdsEnabled)
+            if (!_lastAdTime.HasValue || Time.time - _lastAdTime.Value >= MinAdInterval)
             {
                 ShowAd();
             }

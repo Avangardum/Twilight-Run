@@ -52,7 +52,7 @@ namespace Avangardum.TwilightRun.Models
             if (deltaTime is < 0 or float.PositiveInfinity or float.NaN)
                 throw new ArgumentOutOfRangeException(nameof(deltaTime), deltaTime, $"Invalid {nameof(deltaTime)} value.");
             
-            if (IsGameOver) return;
+            if (IsGameOver || IsPaused) return;
             
             // If deltaTime is more than maxDeltaTime, unfold this update into several smaller updates.
             const float maxDeltaTime = 0.1f;

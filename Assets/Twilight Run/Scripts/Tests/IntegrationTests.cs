@@ -25,10 +25,11 @@ namespace Avangardum.TwilightRun.Tests
         }
         
         [UnitySetUp]
-        public IEnumerator Setup()
+        public IEnumerator CSetup()
         {
-            Object.FindObjectsOfType<GameObject>().ToList().ForEach(Object.Destroy);
+            Time.timeScale = 1;
             yield return LoadScene("Game");
+            _saver.AreAdsRemoved = true; // Remove ads, because ads throw exceptions during tests
             _whiteCharacter = GameObject.Find("White Character");
             UAssert.IsNotNull(_whiteCharacter);
             _blackCharacter = GameObject.Find("Black Character");
@@ -36,7 +37,15 @@ namespace Avangardum.TwilightRun.Tests
             _gameModel.Restart();
             yield return null;
         }
-        
+
+        [UnityTearDown]
+        public IEnumerator CTeardown()
+        {
+            _saver.Clear();
+            Object.FindObjectsOfType<GameObject>().ToList().ForEach(Object.Destroy);
+            yield break;
+        }
+
         [UnityTest]
         public IEnumerator CharactersMoveForward()
         {
@@ -73,7 +82,7 @@ namespace Avangardum.TwilightRun.Tests
         [UnityTest]
         public IEnumerator HighScoreIsUpdated()
         {
-            _saver.Clear();
+            _saver.HighScore = 0;
             Time.timeScale = 5;
             yield return new WaitForSeconds(3);
             Time.timeScale = 1;

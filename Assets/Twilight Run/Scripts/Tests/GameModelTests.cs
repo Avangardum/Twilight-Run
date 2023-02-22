@@ -370,7 +370,8 @@ namespace Avangardum.TwilightRun.Tests
             Assert.That(whiteToBlackRatio, Is.InRange(8, 12));
         }
 
-        [Test] public void ObstacleGroupsWithNonZeroDifficultyAreSpawnedOnlyWhenScoreIsHighEnough()
+        [Test] 
+        public void ObstacleGroupsWithNonZeroDifficultyAreSpawnedOnlyWhenScoreIsHighEnough()
         {
             const int secondGroupDifficulty = 50;
             SetObstacleGroupConfig(new List<ObstacleGroup>
@@ -398,6 +399,16 @@ namespace Avangardum.TwilightRun.Tests
             Assert.That(whiteObstaclesCount, Is.EqualTo(0));
             Wait(60);
             Assert.That(whiteObstaclesCount, Is.GreaterThan(0));
+        }
+
+        [Test]
+        public void IsPausedStopsGame([Values] bool isPaused)
+        {
+            _gameModel.IsPaused = isPaused;
+            var whiteCharacterPosition = _gameModel.WhiteCharacterPosition;
+            Wait(1);
+            var didGameStop = _gameModel.WhiteCharacterPosition == whiteCharacterPosition;
+            Assert.That(didGameStop, Is.EqualTo(isPaused));
         }
         
         private void Wait(float time, float timeStep = DefaultTimeStep)
