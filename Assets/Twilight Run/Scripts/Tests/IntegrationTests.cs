@@ -27,6 +27,7 @@ namespace Avangardum.TwilightRun.Tests
         [UnitySetUp]
         public IEnumerator Setup()
         {
+            Object.FindObjectsOfType<GameObject>().ToList().ForEach(Object.Destroy);
             yield return LoadScene("Game");
             _whiteCharacter = GameObject.Find("White Character");
             UAssert.IsNotNull(_whiteCharacter);
