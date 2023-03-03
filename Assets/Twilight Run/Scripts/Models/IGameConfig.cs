@@ -11,6 +11,7 @@ namespace Avangardum.TwilightRun.Models
         float CharacterBaseVerticalSpeed { get; }
         float MinCharacterYPosition { get; }
         float MaxCharacterYPosition { get; }
+        float SwapCoyoteTime { get; }
         float StartSafeZoneSize { get; }
         
         // The world generation zone is the area where the world must be always generated

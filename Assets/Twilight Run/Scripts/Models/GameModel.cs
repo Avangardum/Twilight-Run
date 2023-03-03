@@ -22,6 +22,7 @@ namespace Avangardum.TwilightRun.Models
         private float _characterVerticalSpeed;
         private float _characterVerticalAcceleration;
         private List<ObstacleGroup> _unfoldedObstacleGroups;
+        private float _swapCoyoteTimeLeft;
 
         public GameModel(IGameConfig gameConfig, ISaver saver)
         {
@@ -44,7 +45,8 @@ namespace Avangardum.TwilightRun.Models
         public IReadOnlyList<Obstacle> Obstacles => _obstacles;
         public bool IsGameOver { get; private set; } = true;
         public int Score => (int)(_whiteCharacterPosition.X * _gameConfig.ScorePerMeter);
-        public bool IsPaused { get; set; } // TODO add pause
+        public bool IsPaused { get; set; }
+        public bool IsSwapping => _whiteCharacterVerticalDirection != 0;
 
         public void Update(float deltaTime)
         {
@@ -64,6 +66,7 @@ namespace Avangardum.TwilightRun.Models
 
             GenerateWorld();
             ProcessMovement();
+            ProcessCoyoteTimeSwap();
             CheckCollisions();
             UpdateHighScore();
             CleanupWorld();
@@ -94,6 +97,25 @@ namespace Avangardum.TwilightRun.Models
                     _whiteCharacterVerticalDirection = 0;
                     _whiteCharacterPosition.Y = _gameConfig.MinCharacterYPosition;
                     _blackCharacterPosition.Y = _gameConfig.MaxCharacterYPosition;
+                }
+            }
+
+            void ProcessCoyoteTimeSwap()
+            {
+                if (_swapCoyoteTimeLeft == 0) return;
+
+                if (!IsSwapping)
+                {
+                    Swap();
+                    _swapCoyoteTimeLeft = 0;
+                }
+                else
+                {
+                    _swapCoyoteTimeLeft -= deltaTime;
+                    if (_swapCoyoteTimeLeft <= 0)
+                    {
+                        _swapCoyoteTimeLeft = 0;
+                    }
                 }
             }
 
@@ -161,9 +183,11 @@ namespace Avangardum.TwilightRun.Models
 
         public void Swap()
         {
-            if (_whiteCharacterVerticalDirection != 0) return;
-            Debug.Assert(new[] { _gameConfig.MinCharacterYPosition, _gameConfig.MaxCharacterYPosition }.
-                Contains(_whiteCharacterPosition.Y));
+            if (IsSwapping)
+            {
+                _swapCoyoteTimeLeft = _gameConfig.SwapCoyoteTime;
+                return;
+            }
             _whiteCharacterVerticalDirection = _whiteCharacterPosition.Y == _gameConfig.MinCharacterYPosition ? 1 : -1;
         }
         
@@ -176,6 +200,7 @@ namespace Avangardum.TwilightRun.Models
             _characterVerticalSpeed = _gameConfig.CharacterBaseVerticalSpeed;
             IsGameOver = false;
             _obstacles.ToList().ForEach(RemoveObstacle);
+            _swapCoyoteTimeLeft = 0;
 
             StateUpdated?.Invoke(this, EventArgs.Empty);
         }

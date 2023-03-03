@@ -411,6 +411,21 @@ namespace Avangardum.TwilightRun.Tests
             Assert.That(didGameStop, Is.EqualTo(isPaused));
         }
         
+        [Test]
+        public void CallingSwapJustBeforeLandingPerformsSwap()
+        {
+            SetHarmlessObstacleGroupConfig();
+            Assume.That(_gameModel.BlackCharacterPosition.Y, Is.EqualTo(_testGameConfig.MinCharacterYPosition));
+            _gameModel.Swap();
+            while (_gameModel.BlackCharacterPosition.Y < _testGameConfig.MaxCharacterYPosition - 1)
+            {
+                _gameModel.Update(DefaultTimeStep);
+            }
+            _gameModel.Swap();
+            Wait(3);
+            Assert.That(_gameModel.BlackCharacterPosition.Y, Is.EqualTo(_testGameConfig.MinCharacterYPosition));
+        }
+        
         private void Wait(float time, float timeStep = DefaultTimeStep)
         {
             var timeLeft = time;

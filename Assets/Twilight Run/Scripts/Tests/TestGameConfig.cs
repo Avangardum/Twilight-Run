@@ -21,6 +21,7 @@ namespace Avangardum.TwilightRun.Tests
             CharacterBaseVerticalSpeed = sourceConfig.CharacterBaseVerticalSpeed;
             MinCharacterYPosition = sourceConfig.MinCharacterYPosition;
             MaxCharacterYPosition = sourceConfig.MaxCharacterYPosition;
+            SwapCoyoteTime = sourceConfig.SwapCoyoteTime;
             StartSafeZoneSize = sourceConfig.StartSafeZoneSize;
             WorldGenerationZoneForwardSize = sourceConfig.WorldGenerationZoneForwardSize;
             WorldGenerationZoneBackSize = sourceConfig.WorldGenerationZoneBackSize;
@@ -35,6 +36,7 @@ namespace Avangardum.TwilightRun.Tests
         public float CharacterBaseVerticalSpeed { get; set; }
         public float MinCharacterYPosition { get; set; }
         public float MaxCharacterYPosition { get; set; }
+        public float SwapCoyoteTime { get; set; }
         public float StartSafeZoneSize { get; set; }
         public float WorldGenerationZoneForwardSize { get; set; }
         public float WorldGenerationZoneBackSize { get; set; }

@@ -15,6 +15,7 @@ namespace Avangardum.TwilightRun.Main
         [field: SerializeField] public float CharacterBaseVerticalSpeed { get; private set; }
         [field: SerializeField] public float MinCharacterYPosition { get; private set; }
         [field: SerializeField] public float MaxCharacterYPosition { get; private set; }
+        [field: SerializeField] public float SwapCoyoteTime { get; private set; }
         [field: SerializeField] public float StartSafeZoneSize { get; private set; }
         [field: SerializeField] public float WorldGenerationZoneForwardSize { get; private set; }
         [field: SerializeField] public float WorldGenerationZoneBackSize { get; private set; }

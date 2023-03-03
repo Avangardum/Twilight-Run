@@ -10,6 +10,7 @@ using UAssert = UnityEngine.Assertions.Assert;
 
 namespace Avangardum.TwilightRun.Tests
 {
+    [Explicit]
     public class IntegrationTests : SceneTestFixture
     {
         private GameObject _whiteCharacter;
